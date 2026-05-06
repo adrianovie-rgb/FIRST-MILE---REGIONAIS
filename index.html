@@ -58,9 +58,13 @@ meta:{ppp:175,recv:98.5,stow:99.5},
 ppp:{"First Mile":[165.4,171.1,174.8,176.1,175.8,196.2],"DF-SUL":[143.9,152.1,153.3,155.4,157.1,175.2],"SP CAP":[163.0,177.4,180.2,183.8,179.5,208.4],"SP INT":[159.0,155.9,158.6,162.0,163.4,172.7],"RIMES-NE":[210.5,217.1,230.0,220.9,220.7,254.0]},
 recv:{"First Mile":[96.28,95.39,96.23,95.38,95.89,95.20],"DF-SUL":[98.84,98.72,99.63,99.39,99.62,99.71],"SP CAP":[95.28,94.74,95.79,95.86,96.02,95.71],"SP INT":[95.31,93.43,94.24,91.93,92.98,91.60],"RIMES-NE":[98.75,98.81,98.98,99.52,99.52,99.61]},
 stow:{"First Mile":[96.13,96.10,97.23,97.97,98.48,97.45],"DF-SUL":[99.59,99.58,99.65,99.85,99.82,98.93],"SP CAP":[96.93,97.04,98.56,98.93,99.04,96.44],"SP INT":[92.80,92.62,94.40,95.94,97.02,96.90],"RIMES-NE":[99.60,99.50,99.38,99.45,99.76,99.73]},
-vol:{"First Mile":[720853,990347,846888,723788,677182,369555],"DF-SUL":[102025,144905,129646,111121,102186,51437],"SP CAP":[249080,338162,268625,228592,215754,117404],"SP INT":[269770,370780,328196,283101,261533,146906],"RIMES-NE":[99978,136500,120421,100974,97709,53808]}
+vol:{"First Mile":[720853,990347,846888,723788,677182,369555],"DF-SUL":[102025,144905,129646,111121,102186,51437],"SP CAP":[249080,338162,268625,228592,215754,117404],"SP INT":[269770,370780,328196,283101,261533,146906],"RIMES-NE":[99978,136500,120421,100974,97709,53808]},
+thp:{"First Mile":[79.7,88.8,76.5,83.9,78.4,105.5],"DF-SUL":[70.6,76.8,80.3,75.6,73.3,98.8],"SP CAP":[87.7,98.6,78.6,93.4,86.4,108.8],"RIMES-NE":[67.4,74.9,67.2,71.3,64.6,102.9]},
+thpVol:{"First Mile":[353300,484959,388391,317029,311978,270188],"DF-SUL":[65848,92380,82789,71780,66298,53645],"SP CAP":[223346,306644,233105,183302,186724,166987],"RIMES-NE":[64106,85935,72497,61947,58956,49556]},
+thpHrs:{"First Mile":[4431.3,5460.3,5074.2,3779.8,3977.8,2560.3],"DF-SUL":[932.6,1203.6,1031.3,948.9,904.4,543.1],"SP CAP":[2546.8,3109.6,2964.3,1961.9,2160.2,1535.5],"RIMES-NE":[951.8,1147.1,1078.6,869.0,913.2,481.7]}
 };
 var NW=D.weeks.length,WK=D.weeks,R=D.regionals,C=D.colors,M=D.meta;
+var R_THP=["First Mile","DF-SUL","SP CAP","RIMES-NE"];
 function fmt(n){return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,".")}
 function cls(v,meta){return v>=meta?"ok":(v>=meta*0.95?"att":"crit")}
 function showTab(i){document.querySelectorAll('.tab').forEach(function(t,idx){t.classList.toggle('active',idx===i)});document.querySelectorAll('.content').forEach(function(c,idx){c.classList.toggle('active',idx===i)})}
@@ -70,18 +74,19 @@ for(var pass=0;pass<3;pass++){for(var i=1;i<positions.length;i++){
 var diff=positions[i].y-positions[i-1].y;
 if(diff<minGap){var shift=(minGap-diff)/2;positions[i-1].y-=shift;positions[i].y+=shift}}}
 return positions}
-function drawChart(svgId,dataObj,metaVal,yMin,yMax){
+function drawChart(svgId,dataObj,metaVal,yMin,yMax,regionalsArr){
 var svg=document.getElementById(svgId);if(!svg)return;
+var regs=regionalsArr||R;
 var W=960,H=400,padL=70,padR=130,padT=45,padB=50;
 var chartW=W-padL-padR,chartH=H-padT-padB;
 var xStep=chartW/(NW-1);var range=yMax-yMin;var s='';
 var gridSteps=6;
 for(var g=0;g<=gridSteps;g++){var gVal=yMin+(range/gridSteps)*g;var gy=padT+chartH-((gVal-yMin)/range)*chartH;s+='<line x1="'+padL+'" y1="'+gy+'" x2="'+(W-padR)+'" y2="'+gy+'" stroke="#e9ecef" stroke-width="1"/>';s+='<text x="'+(padL-10)+'" y="'+(gy+4)+'" fill="#666" text-anchor="end" font-size="10">'+gVal.toFixed(0)+'</text>'}
 for(var w=0;w<NW;w++){var x=padL+w*xStep;s+='<text x="'+x+'" y="'+(H-12)+'" fill="#37475a" text-anchor="middle" font-size="12" font-weight="600">'+WK[w]+'</text>';s+='<line x1="'+x+'" y1="'+padT+'" x2="'+x+'" y2="'+(H-padB)+'" stroke="#f1f3f5" stroke-width="1"/>'}
-var metaY=padT+chartH-((metaVal-yMin)/range)*chartH;
+if(metaVal!==null){var metaY=padT+chartH-((metaVal-yMin)/range)*chartH;
 s+='<line x1="'+padL+'" y1="'+metaY+'" x2="'+(W-padR)+'" y2="'+metaY+'" stroke="#e74c3c" stroke-width="2" stroke-dasharray="8,4"/>';
-s+='<text x="'+(W-padR+5)+'" y="'+(metaY+4)+'" fill="#e74c3c" font-size="11" font-weight="700">Meta '+metaVal+'</text>';
-for(var r=0;r<R.length;r++){var reg=R[r];var vals=dataObj[reg];var color=C[reg];var pts=[];
+s+='<text x="'+(W-padR+5)+'" y="'+(metaY+4)+'" fill="#e74c3c" font-size="11" font-weight="700">Meta '+metaVal+'</text>'}
+for(var r=0;r<regs.length;r++){var reg=regs[r];var vals=dataObj[reg];if(!vals)continue;var color=C[reg];var pts=[];
 var lw=reg==="First Mile"?3:2.5;
 for(var w=0;w<NW;w++){var x=padL+w*xStep;var y=padT+chartH-((vals[w]-yMin)/range)*chartH;pts.push(x+','+y)}
 s+='<polyline points="'+pts.join(' ')+'" fill="none" stroke="'+color+'" stroke-width="'+lw+'"/>';
@@ -89,7 +94,7 @@ for(var w=0;w<NW;w++){var x=padL+w*xStep;var y=padT+chartH-((vals[w]-yMin)/range
 s+='<circle cx="'+x+'" cy="'+y+'" r="5" fill="'+color+'" stroke="#fff" stroke-width="2"/>'}}
 for(var w=0;w<NW;w++){var x=padL+w*xStep;
 var labels=[];
-for(var r=0;r<R.length;r++){var reg=R[r];var vals=dataObj[reg];var y=padT+chartH-((vals[w]-yMin)/range)*chartH;
+for(var r=0;r<regs.length;r++){var reg=regs[r];var vals=dataObj[reg];if(!vals)continue;var y=padT+chartH-((vals[w]-yMin)/range)*chartH;
 labels.push({r:r,reg:reg,y:y,val:vals[w],color:C[reg]})}
 labels=resolveLabels(labels,22);
 for(var i=0;i<labels.length;i++){var lb=labels[i];
@@ -98,7 +103,7 @@ var ly=lb.y;
 s+='<rect x="'+(x-tw/2)+'" y="'+(ly-9)+'" width="'+tw+'" height="'+th+'" rx="4" fill="'+lb.color+'" opacity="0.92"/>';
 s+='<text x="'+x+'" y="'+(ly+4)+'" fill="#fff" text-anchor="middle" font-size="10" font-weight="700">'+lbl+'</text>'}}
 var endLabels=[];
-for(var r=0;r<R.length;r++){var reg=R[r];var vals=dataObj[reg];var lastY=padT+chartH-((vals[NW-1]-yMin)/range)*chartH;
+for(var r=0;r<regs.length;r++){var reg=regs[r];var vals=dataObj[reg];if(!vals)continue;var lastY=padT+chartH-((vals[NW-1]-yMin)/range)*chartH;
 endLabels.push({reg:reg,y:lastY,color:C[reg]})}
 endLabels=resolveLabels(endLabels,16);
 var lastX=padL+(NW-1)*xStep;
@@ -159,14 +164,49 @@ p1+='<td class="'+avgC+'">'+avg.toFixed(2)+'%</td><td>'+(avg>=M.stow?"\u2705":"\
 p1+='</tbody></table></div>';
 document.getElementById('tab1').innerHTML=p1;
 
-var p2='<div class="bx"><h3>THP — Throughput</h3><div class="desc">Aguardando dados para alimentacao</div>';
-p2+='<div class="placeholder">Aba THP sera alimentada com arquivo externo.<br>Envie o arquivo com os dados de THP para gerar a visualizacao.</div></div>';
+// THP TAB
+var p2='<div class="bx"><h3>Throughput (THP) — Pacotes Processados por Hora</h3><div class="desc">Calculo: Volume Processado / Horas Trabalhadas | Semanas W14-W19 2026 | Fonte: Base TPH</div>';
+p2+=NOTE;
+p2+='<div class="note" style="background:#eef6ff;border-left-color:#3b82f6;color:#1e40af">\u2139\ufe0f <b>SP INT</b> nao possui dados de Horas Trabalhadas na base, portanto nao e exibido nesta aba.</div>';
+p2+='<div class="legend">';
+for(var r=0;r<R_THP.length;r++){p2+='<div class="legend-item" style="'+(R_THP[r]==="First Mile"?"font-weight:800":"")+'"><div class="legend-dot" style="background:'+C[R_THP[r]]+'"></div>'+R_THP[r]+'</div>'}
+p2+='</div>';
+p2+='<svg id="chartTHP" width="100%" viewBox="0 0 960 400"></svg>';
+
+// THP Table
+p2+='<table><thead><tr><th>Regional</th>';for(var w=0;w<NW;w++)p2+='<th>'+WK[w]+'</th>';p2+='<th>Media</th></tr></thead><tbody>';
+for(var r=0;r<R_THP.length;r++){var reg=R_THP[r],vals=D.thp[reg];var avg=vals.reduce(function(a,b){return a+b},0)/NW;
+var bold=reg==="First Mile"?"font-weight:800;font-size:13px;":"font-weight:700;";
+p2+='<tr style="'+(reg==="First Mile"?"background:#edf2f7":"")+'"><td style="text-align:left;'+bold+'color:'+C[reg]+'">'+reg+'</td>';
+for(var w=0;w<NW;w++){p2+='<td style="font-weight:600">'+vals[w].toFixed(1)+'</td>'}
+p2+='<td style="font-weight:700">'+avg.toFixed(1)+'</td></tr>'}
+p2+='</tbody></table>';
+
+// Volume Table
+p2+='<h3 style="margin-top:16px">Volume Processado (THP)</h3><table><thead><tr><th>Regional</th>';
+for(var w=0;w<NW;w++)p2+='<th>'+WK[w]+'</th>';p2+='<th>Total</th></tr></thead><tbody>';
+for(var r=0;r<R_THP.length;r++){var reg=R_THP[r],vals=D.thpVol[reg];var total=vals.reduce(function(a,b){return a+b},0);
+var bold=reg==="First Mile"?"font-weight:800;":"font-weight:700;";
+p2+='<tr style="'+(reg==="First Mile"?"background:#edf2f7":"")+'"><td style="text-align:left;'+bold+'color:'+C[reg]+'">'+reg+'</td>';
+for(var w=0;w<NW;w++)p2+='<td>'+fmt(vals[w])+'</td>';p2+='<td style="font-weight:700">'+fmt(total)+'</td></tr>'}
+p2+='</tbody></table>';
+
+// Hours Table
+p2+='<h3 style="margin-top:16px">Horas Trabalhadas</h3><table><thead><tr><th>Regional</th>';
+for(var w=0;w<NW;w++)p2+='<th>'+WK[w]+'</th>';p2+='<th>Total</th></tr></thead><tbody>';
+for(var r=0;r<R_THP.length;r++){var reg=R_THP[r],vals=D.thpHrs[reg];var total=vals.reduce(function(a,b){return a+b},0);
+var bold=reg==="First Mile"?"font-weight:800;":"font-weight:700;";
+p2+='<tr style="'+(reg==="First Mile"?"background:#edf2f7":"")+'"><td style="text-align:left;'+bold+'color:'+C[reg]+'">'+reg+'</td>';
+for(var w=0;w<NW;w++)p2+='<td>'+fmt(vals[w])+'</td>';p2+='<td style="font-weight:700">'+fmt(total)+'</td></tr>'}
+p2+='</tbody></table></div>';
 document.getElementById('tab2').innerHTML=p2;
 
-drawChart('chartPPP',D.ppp,M.ppp,135,260);
-drawChart('chartRecv',D.recv,M.recv,89,101);
-drawChart('chartStow',D.stow,M.stow,91,101);
+drawChart('chartPPP',D.ppp,M.ppp,135,260,R);
+drawChart('chartRecv',D.recv,M.recv,89,101,R);
+drawChart('chartStow',D.stow,M.stow,91,101,R);
+drawChart('chartTHP',D.thp,null,55,115,R_THP);
 });
 </script>
 </body>
 </html>
+
