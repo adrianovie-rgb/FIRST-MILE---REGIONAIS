@@ -1,0 +1,172 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FM METRICS - Visao Multi-Regional</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#f8f9fa;color:#1d2d35}
+.hdr{background:linear-gradient(135deg,#232f3e 0%,#37475a 100%);color:#fff;padding:18px 32px;display:flex;align-items:center;justify-content:space-between}
+.hdr h1{font-size:20px;font-weight:700;letter-spacing:0.5px}
+.hdr .sub{font-size:12px;opacity:0.8}
+.tabs{display:flex;gap:0;background:#232f3e;padding:0 32px}
+.tab{padding:12px 28px;color:#adb5bd;font-size:13px;font-weight:600;cursor:pointer;border-bottom:3px solid transparent;transition:all .2s}
+.tab:hover{color:#fff}
+.tab.active{color:#ff9900;border-bottom-color:#ff9900}
+.content{display:none;padding:24px 32px;max-width:1400px;margin:0 auto}
+.content.active{display:block}
+.bx{background:#fff;border-radius:12px;padding:20px 24px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+.bx h3{font-size:16px;font-weight:700;color:#232f3e;margin-bottom:4px}
+.bx .desc{font-size:11px;color:#666;margin-bottom:16px}
+.note{background:#fff7ed;border-left:4px solid #f97316;padding:10px 14px;margin-bottom:16px;font-size:11px;color:#9a3412;border-radius:0 6px 6px 0}
+table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:12px}
+th{background:#f1f3f5;padding:8px 10px;text-align:center;font-weight:600;color:#37475a;border:1px solid #e9ecef}
+td{padding:7px 10px;text-align:center;border:1px solid #e9ecef}
+tr:nth-child(even){background:#f8f9fa}
+.ok{background:#d1fae5;color:#065f46;font-weight:700}
+.att{background:#fef3c7;color:#92400e;font-weight:700}
+.crit{background:#fee2e2;color:#991b1b;font-weight:700}
+.legend{display:flex;gap:20px;margin:12px 0 8px;flex-wrap:wrap}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600}
+.legend-dot{width:12px;height:12px;border-radius:50%}
+.placeholder{background:#f1f3f5;border:2px dashed #adb5bd;border-radius:12px;padding:60px;text-align:center;color:#666;font-size:14px}
+.ft{text-align:center;padding:16px;font-size:11px;color:#adb5bd;background:#232f3e}
+</style>
+</head>
+<body>
+<div class="hdr">
+<div><h1>FM METRICS — Visao Multi-Regional</h1><div class="sub">Amazon Logistics Brasil | W14-W19 2026</div></div>
+<div style="text-align:right"><div class="sub">Atualizado: 06/05/2026 00:03</div><div class="sub">Fonte: [BR TRANS] FM METRICS</div></div>
+</div>
+<div class="tabs">
+<div class="tab active" onclick="showTab(0)">PPP</div>
+<div class="tab" onclick="showTab(1)">Stow & Receive</div>
+<div class="tab" onclick="showTab(2)">THP</div>
+</div>
+<div class="content active" id="tab0"></div>
+<div class="content" id="tab1"></div>
+<div class="content" id="tab2"></div>
+<div class="ft">FM METRICS Multi-Regional Dashboard | Amazon Logistics Brasil | Dados: [BR TRANS] FM METRICS</div>
+<script>
+var D={
+weeks:["W14","W15","W16","W17","W18","W19*"],
+regionals:["First Mile","DF-SUL","SP CAP","SP INT","RIMES-NE"],
+colors:{"First Mile":"#2c3e50","DF-SUL":"#9b59b6","SP CAP":"#95a5a6","SP INT":"#e67e22","RIMES-NE":"#27ae60"},
+meta:{ppp:175,recv:98.5,stow:99.5},
+ppp:{"First Mile":[165.4,171.1,174.8,176.1,175.8,196.2],"DF-SUL":[143.9,152.1,153.3,155.4,157.1,175.2],"SP CAP":[163.0,177.4,180.2,183.8,179.5,208.4],"SP INT":[159.0,155.9,158.6,162.0,163.4,172.7],"RIMES-NE":[210.5,217.1,230.0,220.9,220.7,254.0]},
+recv:{"First Mile":[96.28,95.39,96.23,95.38,95.89,95.20],"DF-SUL":[98.84,98.72,99.63,99.39,99.62,99.71],"SP CAP":[95.28,94.74,95.79,95.86,96.02,95.71],"SP INT":[95.31,93.43,94.24,91.93,92.98,91.60],"RIMES-NE":[98.75,98.81,98.98,99.52,99.52,99.61]},
+stow:{"First Mile":[96.13,96.10,97.23,97.97,98.48,97.45],"DF-SUL":[99.59,99.58,99.65,99.85,99.82,98.93],"SP CAP":[96.93,97.04,98.56,98.93,99.04,96.44],"SP INT":[92.80,92.62,94.40,95.94,97.02,96.90],"RIMES-NE":[99.60,99.50,99.38,99.45,99.76,99.73]},
+vol:{"First Mile":[720853,990347,846888,723788,677182,369555],"DF-SUL":[102025,144905,129646,111121,102186,51437],"SP CAP":[249080,338162,268625,228592,215754,117404],"SP INT":[269770,370780,328196,283101,261533,146906],"RIMES-NE":[99978,136500,120421,100974,97709,53808]}
+};
+var NW=D.weeks.length,WK=D.weeks,R=D.regionals,C=D.colors,M=D.meta;
+function fmt(n){return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,".")}
+function cls(v,meta){return v>=meta?"ok":(v>=meta*0.95?"att":"crit")}
+function showTab(i){document.querySelectorAll('.tab').forEach(function(t,idx){t.classList.toggle('active',idx===i)});document.querySelectorAll('.content').forEach(function(c,idx){c.classList.toggle('active',idx===i)})}
+function resolveLabels(positions,minGap){
+positions.sort(function(a,b){return a.y-b.y});
+for(var pass=0;pass<3;pass++){for(var i=1;i<positions.length;i++){
+var diff=positions[i].y-positions[i-1].y;
+if(diff<minGap){var shift=(minGap-diff)/2;positions[i-1].y-=shift;positions[i].y+=shift}}}
+return positions}
+function drawChart(svgId,dataObj,metaVal,yMin,yMax){
+var svg=document.getElementById(svgId);if(!svg)return;
+var W=960,H=400,padL=70,padR=130,padT=45,padB=50;
+var chartW=W-padL-padR,chartH=H-padT-padB;
+var xStep=chartW/(NW-1);var range=yMax-yMin;var s='';
+var gridSteps=6;
+for(var g=0;g<=gridSteps;g++){var gVal=yMin+(range/gridSteps)*g;var gy=padT+chartH-((gVal-yMin)/range)*chartH;s+='<line x1="'+padL+'" y1="'+gy+'" x2="'+(W-padR)+'" y2="'+gy+'" stroke="#e9ecef" stroke-width="1"/>';s+='<text x="'+(padL-10)+'" y="'+(gy+4)+'" fill="#666" text-anchor="end" font-size="10">'+gVal.toFixed(0)+'</text>'}
+for(var w=0;w<NW;w++){var x=padL+w*xStep;s+='<text x="'+x+'" y="'+(H-12)+'" fill="#37475a" text-anchor="middle" font-size="12" font-weight="600">'+WK[w]+'</text>';s+='<line x1="'+x+'" y1="'+padT+'" x2="'+x+'" y2="'+(H-padB)+'" stroke="#f1f3f5" stroke-width="1"/>'}
+var metaY=padT+chartH-((metaVal-yMin)/range)*chartH;
+s+='<line x1="'+padL+'" y1="'+metaY+'" x2="'+(W-padR)+'" y2="'+metaY+'" stroke="#e74c3c" stroke-width="2" stroke-dasharray="8,4"/>';
+s+='<text x="'+(W-padR+5)+'" y="'+(metaY+4)+'" fill="#e74c3c" font-size="11" font-weight="700">Meta '+metaVal+'</text>';
+for(var r=0;r<R.length;r++){var reg=R[r];var vals=dataObj[reg];var color=C[reg];var pts=[];
+var lw=reg==="First Mile"?3:2.5;
+for(var w=0;w<NW;w++){var x=padL+w*xStep;var y=padT+chartH-((vals[w]-yMin)/range)*chartH;pts.push(x+','+y)}
+s+='<polyline points="'+pts.join(' ')+'" fill="none" stroke="'+color+'" stroke-width="'+lw+'"/>';
+for(var w=0;w<NW;w++){var x=padL+w*xStep;var y=padT+chartH-((vals[w]-yMin)/range)*chartH;
+s+='<circle cx="'+x+'" cy="'+y+'" r="5" fill="'+color+'" stroke="#fff" stroke-width="2"/>'}}
+for(var w=0;w<NW;w++){var x=padL+w*xStep;
+var labels=[];
+for(var r=0;r<R.length;r++){var reg=R[r];var vals=dataObj[reg];var y=padT+chartH-((vals[w]-yMin)/range)*chartH;
+labels.push({r:r,reg:reg,y:y,val:vals[w],color:C[reg]})}
+labels=resolveLabels(labels,22);
+for(var i=0;i<labels.length;i++){var lb=labels[i];
+var lbl=lb.val.toFixed(1);var tw=lbl.length*6.5+10;var th=17;
+var ly=lb.y;
+s+='<rect x="'+(x-tw/2)+'" y="'+(ly-9)+'" width="'+tw+'" height="'+th+'" rx="4" fill="'+lb.color+'" opacity="0.92"/>';
+s+='<text x="'+x+'" y="'+(ly+4)+'" fill="#fff" text-anchor="middle" font-size="10" font-weight="700">'+lbl+'</text>'}}
+var endLabels=[];
+for(var r=0;r<R.length;r++){var reg=R[r];var vals=dataObj[reg];var lastY=padT+chartH-((vals[NW-1]-yMin)/range)*chartH;
+endLabels.push({reg:reg,y:lastY,color:C[reg]})}
+endLabels=resolveLabels(endLabels,16);
+var lastX=padL+(NW-1)*xStep;
+for(var i=0;i<endLabels.length;i++){var el=endLabels[i];
+s+='<text x="'+(lastX+12)+'" y="'+(el.y+4)+'" fill="'+el.color+'" font-size="11" font-weight="700">'+el.reg+'</text>'}
+svg.innerHTML=s}
+document.addEventListener('DOMContentLoaded',function(){
+var NOTE='<div class="note">\u26a0\ufe0f <b>W19*</b> = dados parciais (semana em andamento, atualizado em 06/05/2026). Valores podem mudar ate o fechamento da semana.</div>';
+
+var p0='<div class="bx"><h3>Packages Per Pallet (PPP) — Todas as Regionais</h3><div class="desc">Meta: >=175 | Semanas W14-W19 2026 | Fonte: [BR TRANS] FM METRICS</div>';
+p0+=NOTE;
+p0+='<div class="legend">';for(var r=0;r<R.length;r++){p0+='<div class="legend-item" style="'+(R[r]==="First Mile"?"font-weight:800":"")+'"><div class="legend-dot" style="background:'+C[R[r]]+'"></div>'+R[r]+'</div>'}
+p0+='<div class="legend-item"><div class="legend-dot" style="background:#e74c3c"></div>Meta (175)</div></div>';
+p0+='<svg id="chartPPP" width="100%" viewBox="0 0 960 400"></svg>';
+p0+='<table><thead><tr><th>Regional</th>';for(var w=0;w<NW;w++)p0+='<th>'+WK[w]+'</th>';p0+='<th>Media</th><th>Delta Meta</th></tr></thead><tbody>';
+for(var r=0;r<R.length;r++){var reg=R[r],vals=D.ppp[reg];var avg=vals.reduce(function(a,b){return a+b},0)/NW;var gap=avg-M.ppp;
+var bold=reg==="First Mile"?"font-weight:800;font-size:13px;":"font-weight:700;";
+p0+='<tr style="'+(reg==="First Mile"?"background:#edf2f7":"")+'"><td style="text-align:left;'+bold+'color:'+C[reg]+'">'+reg+'</td>';
+for(var w=0;w<NW;w++){var c=cls(vals[w],M.ppp);p0+='<td class="'+c+'">'+vals[w].toFixed(1)+'</td>'}
+var avgC=cls(avg,M.ppp);p0+='<td class="'+avgC+'">'+avg.toFixed(1)+'</td>';
+p0+='<td style="font-weight:700;color:'+(gap>=0?"#065f46":"#991b1b")+'">'+(gap>=0?"+":"")+gap.toFixed(1)+'</td></tr>'}
+p0+='</tbody></table>';
+p0+='<h3 style="margin-top:16px">Volume Processado</h3><table><thead><tr><th>Regional</th>';
+for(var w=0;w<NW;w++)p0+='<th>'+WK[w]+'</th>';p0+='<th>Total</th></tr></thead><tbody>';
+for(var r=0;r<R.length;r++){var reg=R[r],vals=D.vol[reg];var total=vals.reduce(function(a,b){return a+b},0);
+var bold=reg==="First Mile"?"font-weight:800;":"font-weight:700;";
+p0+='<tr style="'+(reg==="First Mile"?"background:#edf2f7":"")+'"><td style="text-align:left;'+bold+'color:'+C[reg]+'">'+reg+'</td>';
+for(var w=0;w<NW;w++)p0+='<td>'+fmt(vals[w])+'</td>';p0+='<td style="font-weight:700">'+fmt(total)+'</td></tr>'}
+p0+='</tbody></table></div>';
+document.getElementById('tab0').innerHTML=p0;
+
+var p1='<div class="bx"><h3>Receive Success % — Todas as Regionais</h3><div class="desc">Meta: >=98,5% | Semanas W14-W19 2026</div>';
+p1+=NOTE;
+p1+='<div class="legend">';for(var r=0;r<R.length;r++)p1+='<div class="legend-item" style="'+(R[r]==="First Mile"?"font-weight:800":"")+'"><div class="legend-dot" style="background:'+C[R[r]]+'"></div>'+R[r]+'</div>';
+p1+='<div class="legend-item"><div class="legend-dot" style="background:#e74c3c"></div>Meta (98,5%)</div></div>';
+p1+='<svg id="chartRecv" width="100%" viewBox="0 0 960 400"></svg>';
+p1+='<table><thead><tr><th>Regional</th>';for(var w=0;w<NW;w++)p1+='<th>'+WK[w]+'</th>';p1+='<th>Media</th><th>Status</th></tr></thead><tbody>';
+for(var r=0;r<R.length;r++){var reg=R[r],vals=D.recv[reg];var avg=vals.reduce(function(a,b){return a+b},0)/NW;
+var bold=reg==="First Mile"?"font-weight:800;font-size:13px;":"font-weight:700;";
+p1+='<tr style="'+(reg==="First Mile"?"background:#edf2f7":"")+'"><td style="text-align:left;'+bold+'color:'+C[reg]+'">'+reg+'</td>';
+for(var w=0;w<NW;w++){var c=cls(vals[w],M.recv);p1+='<td class="'+c+'">'+vals[w].toFixed(2)+'%</td>'}
+var avgC=cls(avg,M.recv);var st=avg>=M.recv?"Na Meta":"Abaixo";
+p1+='<td class="'+avgC+'">'+avg.toFixed(2)+'%</td><td>'+(avg>=M.recv?"\u2705":"\ud83d\udd34")+' '+st+'</td></tr>'}
+p1+='</tbody></table></div>';
+
+p1+='<div class="bx"><h3>Stow Success % — Todas as Regionais</h3><div class="desc">Meta: >=99,5% | Semanas W14-W19 2026 | DF-SUL ajustado pela regra de feriado (Event201 D+1 util para ESE8/ECB8)</div>';
+p1+=NOTE;
+p1+='<div class="legend">';for(var r=0;r<R.length;r++)p1+='<div class="legend-item" style="'+(R[r]==="First Mile"?"font-weight:800":"")+'"><div class="legend-dot" style="background:'+C[R[r]]+'"></div>'+R[r]+'</div>';
+p1+='<div class="legend-item"><div class="legend-dot" style="background:#e74c3c"></div>Meta (99,5%)</div></div>';
+p1+='<svg id="chartStow" width="100%" viewBox="0 0 960 400"></svg>';
+p1+='<table><thead><tr><th>Regional</th>';for(var w=0;w<NW;w++)p1+='<th>'+WK[w]+'</th>';p1+='<th>Media</th><th>Status</th></tr></thead><tbody>';
+for(var r=0;r<R.length;r++){var reg=R[r],vals=D.stow[reg];var avg=vals.reduce(function(a,b){return a+b},0)/NW;
+var bold=reg==="First Mile"?"font-weight:800;font-size:13px;":"font-weight:700;";
+p1+='<tr style="'+(reg==="First Mile"?"background:#edf2f7":"")+'"><td style="text-align:left;'+bold+'color:'+C[reg]+'">'+reg+'</td>';
+for(var w=0;w<NW;w++){var c=cls(vals[w],M.stow);p1+='<td class="'+c+'">'+vals[w].toFixed(2)+'%</td>'}
+var avgC=cls(avg,M.stow);var st=avg>=M.stow?"Na Meta":"Abaixo";
+p1+='<td class="'+avgC+'">'+avg.toFixed(2)+'%</td><td>'+(avg>=M.stow?"\u2705":"\ud83d\udd34")+' '+st+'</td></tr>'}
+p1+='</tbody></table></div>';
+document.getElementById('tab1').innerHTML=p1;
+
+var p2='<div class="bx"><h3>THP — Throughput</h3><div class="desc">Aguardando dados para alimentacao</div>';
+p2+='<div class="placeholder">Aba THP sera alimentada com arquivo externo.<br>Envie o arquivo com os dados de THP para gerar a visualizacao.</div></div>';
+document.getElementById('tab2').innerHTML=p2;
+
+drawChart('chartPPP',D.ppp,M.ppp,135,260);
+drawChart('chartRecv',D.recv,M.recv,89,101);
+drawChart('chartStow',D.stow,M.stow,91,101);
+});
+</script>
+</body>
+</html>
