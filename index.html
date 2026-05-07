@@ -38,7 +38,7 @@ tr:nth-child(even){background:#f8f9fa}
 <body>
 <div class="hdr">
 <div><h1>FM METRICS — Visao Multi-Regional</h1><div class="sub">Amazon Logistics Brasil | W14-W19 2026</div></div>
-<div style="text-align:right"><div class="sub">Atualizado: 07/05/2026 02:07</div><div class="sub">Fonte: [BR TRANS] FM METRICS</div></div>
+<div style="text-align:right"><div class="sub">Atualizado: 07/05/2026 16:20</div><div class="sub">Fonte: [BR TRANS] FM METRICS | Base TPH</div></div>
 </div>
 <div class="tabs">
 <div class="tab active" onclick="showTab(0)">PPP</div>
@@ -48,7 +48,7 @@ tr:nth-child(even){background:#f8f9fa}
 <div class="content active" id="tab0"></div>
 <div class="content" id="tab1"></div>
 <div class="content" id="tab2"></div>
-<div class="ft">FM METRICS Multi-Regional Dashboard | Amazon Logistics Brasil | Dados: [BR TRANS] FM METRICS</div>
+<div class="ft">FM METRICS Multi-Regional Dashboard | Amazon Logistics Brasil | Dados: [BR TRANS] FM METRICS | Base TPH</div>
 <script>
 var D={
 weeks:["W14","W15","W16","W17","W18","W19*"],
@@ -59,13 +59,14 @@ ppp:{"First Mile":[165.4,171.1,174.8,176.1,175.8,186.4],"DF-SUL":[143.9,152.1,15
 recv:{"First Mile":[96.28,95.39,96.23,95.38,95.89,95.76],"DF-SUL":[98.84,98.72,99.63,99.39,99.62,99.69],"SP CAP":[95.28,94.74,95.79,95.86,96.02,96.01],"SP INT":[95.31,93.43,94.24,91.93,92.98,92.12],"RIMES-NE":[98.75,98.81,98.98,99.52,99.52,99.57]},
 stow:{"First Mile":[96.13,96.10,97.23,97.97,98.48,98.04],"DF-SUL":[99.59,99.58,99.65,99.85,99.82,99.69],"SP CAP":[96.93,97.04,98.56,98.93,99.04,97.54],"SP INT":[92.80,92.62,94.40,95.94,97.02,97.24],"RIMES-NE":[99.60,99.50,99.38,99.45,99.76,99.66]},
 vol:{"First Mile":[720853,990347,846888,723788,677182,395874],"DF-SUL":[102025,144905,129646,111121,102186,65348],"SP CAP":[249080,338162,268625,228592,215754,103923],"SP INT":[269770,370780,328196,283101,261533,153921],"RIMES-NE":[99978,136500,120421,100974,97709,72682]},
-thp:{"First Mile":[79.7,88.8,76.5,83.9,78.4,105.5],"DF-SUL":[70.6,76.8,80.3,75.6,73.3,98.8],"SP CAP":[87.7,98.6,78.6,93.4,86.4,108.8],"RIMES-NE":[67.4,74.9,67.2,71.3,64.6,102.9]},
-thpVol:{"First Mile":[353300,484959,388391,317029,311978,270188],"DF-SUL":[65848,92380,82789,71780,66298,53645],"SP CAP":[223346,306644,233105,183302,186724,166987],"RIMES-NE":[64106,85935,72497,61947,58956,49556]},
-thpHrs:{"First Mile":[4431.3,5460.3,5074.2,3779.8,3977.8,2560.3],"DF-SUL":[932.6,1203.6,1031.3,948.9,904.4,543.1],"SP CAP":[2546.8,3109.6,2964.3,1961.9,2160.2,1535.5],"RIMES-NE":[951.8,1147.1,1078.6,869.0,913.2,481.7]}
+thp:{"First Mile":[79.7,88.8,76.5,86.8,79.6,101.7],"DF-SUL":[70.6,76.8,80.3,75.6,73.3,94.6],"SP CAP":[87.7,98.6,78.6,99.1,88.6,106.3],"RIMES-NE":[67.4,74.9,67.2,71.3,64.6,95.7]},
+thpVol:{"First Mile":[353300,484959,388391,328096,316565,356301],"DF-SUL":[65848,92380,82789,71780,66298,71219],"SP CAP":[223346,306644,233105,194369,191311,220458],"RIMES-NE":[64106,85935,72497,61947,58956,64624]},
+thpHrs:{"First Mile":[4431.2,5460.3,5074.2,3779.8,3977.8,3502.9],"DF-SUL":[932.6,1203.6,1031.3,948.9,904.4,753.0],"SP CAP":[2546.8,3109.6,2964.3,1961.9,2160.2,2074.3],"RIMES-NE":[951.8,1147.1,1078.6,869.0,913.2,675.6]}
 };
 var NW=D.weeks.length,WK=D.weeks,R=D.regionals,C=D.colors,M=D.meta;
 var R_THP=["First Mile","DF-SUL","SP CAP","RIMES-NE"];
 function fmt(n){return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,".")}
+function fmtHrs(n){var parts=n.toFixed(1).split('.');var intPart=parts[0].replace(/\B(?=(\d{3})+(?!\d))/g,".");return intPart+","+parts[1]}
 function cls(v,meta){return v>=meta?"ok":(v>=meta*0.95?"att":"crit")}
 function showTab(i){document.querySelectorAll('.tab').forEach(function(t,idx){t.classList.toggle('active',idx===i)});document.querySelectorAll('.content').forEach(function(c,idx){c.classList.toggle('active',idx===i)})}
 function resolveLabels(positions,minGap){
@@ -111,7 +112,7 @@ for(var i=0;i<endLabels.length;i++){var el=endLabels[i];
 s+='<text x="'+(lastX+12)+'" y="'+(el.y+4)+'" fill="'+el.color+'" font-size="11" font-weight="700">'+el.reg+'</text>'}
 svg.innerHTML=s}
 document.addEventListener('DOMContentLoaded',function(){
-var NOTE='<div class="note">\u26a0\ufe0f <b>W19*</b> = dados parciais (semana em andamento, atualizado em 07/05/2026). Valores podem mudar ate o fechamento da semana.</div>';
+var NOTE='<div class="note">\u26a0\ufe0f <b>W19*</b> = dados parciais (3 dias: 04, 05, 06/Mai). Valores podem mudar ate o fechamento da semana.</div>';
 
 var p0='<div class="bx"><h3>Packages Per Pallet (PPP) \u2014 Todas as Regionais</h3><div class="desc">Meta: >=175 | Semanas W14-W19 2026 | Fonte: [BR TRANS] FM METRICS</div>';
 p0+=NOTE;
@@ -191,7 +192,7 @@ for(var w=0;w<NW;w++)p2+='<th>'+WK[w]+'</th>';p2+='<th>Total</th></tr></thead><t
 for(var r=0;r<R_THP.length;r++){var reg=R_THP[r],vals=D.thpHrs[reg];var total=vals.reduce(function(a,b){return a+b},0);
 var bold=reg==="First Mile"?"font-weight:800;":"font-weight:700;";
 p2+='<tr style="'+(reg==="First Mile"?"background:#edf2f7":"")+'"><td style="text-align:left;'+bold+'color:'+C[reg]+'">'+reg+'</td>';
-for(var w=0;w<NW;w++)p2+='<td>'+fmt(vals[w])+'</td>';p2+='<td style="font-weight:700">'+fmt(total)+'</td></tr>'}
+for(var w=0;w<NW;w++)p2+='<td>'+fmtHrs(vals[w])+'</td>';p2+='<td style="font-weight:700">'+fmtHrs(total)+'</td></tr>'}
 p2+='</tbody></table></div>';
 document.getElementById('tab2').innerHTML=p2;
 
