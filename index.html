@@ -37,7 +37,7 @@ tr:nth-child(even){background:#f8f9fa}
 <body>
 <div class="hdr">
 <div><h1>FM METRICS &#8212; Visao Multi-Regional</h1><div class="sub">Amazon Logistics Brasil | W14-W19 2026</div></div>
-<div style="text-align:right"><div class="sub">Atualizado: 08/05/2026 19:54</div><div class="sub">Fonte: [BR TRANS] FM METRICS | Base TPH-3</div></div>
+<div style="text-align:right"><div class="sub">Atualizado: 08/05/2026 22:00</div><div class="sub">Fonte: [BR TRANS] FM METRICS | Base TPH-3</div></div>
 </div>
 <div class="tabs">
 <div class="tab active" onclick="showTab(0)">PPP</div>
@@ -54,9 +54,9 @@ weeks:["W14","W15","W16","W17","W18","W19*"],
 regionals:["First Mile","DF-SUL","SP CAP","SP INT","RIMES-NE"],
 colors:{"First Mile":"#2c3e50","DF-SUL":"#9b59b6","SP CAP":"#95a5a6","SP INT":"#e67e22","RIMES-NE":"#27ae60"},
 meta:{ppp:175,recv:98.5,stow:99.5},
-ppp:{"First Mile":[161.6,167.0,169.7,172.1,172.0,186.4],"DF-SUL":[143.9,152.1,153.3,155.4,157.1,174.5],"SP CAP":[163.0,177.3,180.2,183.8,179.3,205.5],"SP INT":[159.0,155.9,158.6,162.0,163.4,167.4],"RIMES-NE":[210.5,217.1,230.0,220.9,220.7,247.1]},
+ppp:{"First Mile":[161.6,167.0,169.7,172.1,172.0,186.4],"DF-SUL":[143.9,152.1,153.3,155.4,157.1,202.9],"SP CAP":[163.0,177.3,180.2,183.8,179.3,205.5],"SP INT":[159.0,155.9,158.6,162.0,163.4,167.4],"RIMES-NE":[210.5,217.1,230.0,220.9,220.7,247.1]},
 recv:{"First Mile":[96.45,95.55,96.38,95.54,96.07,95.75],"DF-SUL":[98.84,98.72,99.63,99.39,99.62,99.65],"SP CAP":[95.28,94.74,95.79,95.86,96.02,95.78],"SP INT":[95.31,93.43,94.24,91.93,92.98,92.23],"RIMES-NE":[98.75,98.81,98.98,99.52,99.52,99.58]},
-stow:{"First Mile":[96.00,96.09,97.22,97.64,98.34,98.14],"DF-SUL":[98.39,99.30,99.38,97.58,98.75,99.32],"SP CAP":[96.93,97.04,98.56,98.93,99.04,97.83],"SP INT":[92.80,92.62,94.40,95.94,97.02,97.29],"RIMES-NE":[99.60,99.50,99.38,99.45,99.76,99.70]},
+stow:{"First Mile":[95.96,96.10,97.23,97.97,98.48,98.12],"DF-SUL":[98.39,99.58,99.65,99.85,99.82,99.33],"SP CAP":[96.93,97.04,98.56,98.93,99.04,97.83],"SP INT":[92.80,92.62,94.40,95.94,97.02,97.29],"RIMES-NE":[99.60,99.50,99.38,99.45,99.76,99.70]},
 vol:{"First Mile":[720853,990347,846888,723788,677182,799730],"DF-SUL":[102025,144905,129646,111121,102186,119387],"SP CAP":[249080,338162,268625,228592,215754,261514],"SP INT":[269770,370780,328196,283101,261533,304259],"RIMES-NE":[99978,136500,120421,100974,97709,114570]},
 thp:{"First Mile":[79.7,88.8,76.5,86.8,79.6,95.9],"DF-SUL":[70.6,76.8,80.3,75.6,73.3,89.5],"SP CAP":[87.7,98.6,78.6,99.1,88.6,101.1],"RIMES-NE":[67.4,74.9,67.2,71.3,64.6,87.2]},
 thpVol:{"First Mile":[353300,484959,388391,328096,316565,429608],"DF-SUL":[65848,92380,82789,71780,66298,85781],"SP CAP":[223346,306644,233105,194369,191311,266587],"RIMES-NE":[64106,85935,72497,61947,58956,77240]},
@@ -111,7 +111,7 @@ for(var i=0;i<endLabels.length;i++){var el=endLabels[i];
 s+='<text x="'+(lastX+12)+'" y="'+(el.y+4)+'" fill="'+el.color+'" font-size="11" font-weight="700">'+el.reg+'</text>'}
 svg.innerHTML=s}
 document.addEventListener('DOMContentLoaded',function(){
-var NOTE='<div class="note">\u26a0\ufe0f <b>W19*</b> = dados parciais (4 dias: 04-07/Mai). Valores podem mudar ate o fechamento da semana.</div>';
+var NOTE='<div class="note">\u26a0\ufe0f <b>W19*</b> = dados parciais (5 dias: 04-08/Mai). Valores podem mudar ate o fechamento da semana.</div>';
 
 var p0='<div class="bx"><h3>Packages Per Pallet (PPP) \u2014 Todas as Regionais</h3><div class="desc">Meta: >=175 | Semanas W14-W19 2026 | Fonte: [BR TRANS] FM METRICS</div>';
 p0+=NOTE;
