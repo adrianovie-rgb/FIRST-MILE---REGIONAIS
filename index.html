@@ -4,13 +4,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>FM METRICS - Visao Multi-Regional</title>
+<title>FM METRICS - Visão Multi-Regional</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#f8f9fa;color:#1d2d35}
 .hdr{background:linear-gradient(135deg,#232f3e 0%,#37475a 100%);color:#fff;padding:18px 32px;display:flex;align-items:center;justify-content:space-between}
 .hdr h1{font-size:20px;font-weight:700;letter-spacing:0.5px}
 .hdr .sub{font-size:12px;opacity:0.8}
+.refresh-btn{background:#ff9900;color:#232f3e;border:none;padding:8px 16px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s}
+.refresh-btn:hover{background:#ffb84d;transform:translateY(-1px)}
+.refresh-btn:active{transform:translateY(0)}
 .tabs{display:flex;gap:0;background:#232f3e;padding:0 32px}
 .tab{padding:12px 28px;color:#adb5bd;font-size:13px;font-weight:600;cursor:pointer;border-bottom:3px solid transparent;transition:all .2s}
 .tab:hover{color:#fff}
@@ -32,12 +35,20 @@ tr:nth-child(even){background:#f8f9fa}
 .legend-item{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600}
 .legend-dot{width:12px;height:12px;border-radius:50%}
 .ft{text-align:center;padding:16px;font-size:11px;color:#adb5bd;background:#232f3e}
+.status-indicator{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+.status-ok{background:#10b981}
+.status-att{background:#f59e0b}
+.status-crit{background:#ef4444}
 </style>
 </head>
 <body>
 <div class="hdr">
-<div><h1>FM METRICS &#8212; Visao Multi-Regional</h1><div class="sub">Amazon Logistics Brasil | W14-W19 2026</div></div>
-<div style="text-align:right"><div class="sub">Atualizado: 11/05/2026 15:45</div><div class="sub">Fonte: [BR TRANS] FM METRICS | Base TPH-4</div></div>
+<div><h1>FM METRICS — Visão Multi-Regional</h1><div class="sub">Amazon Logistics Brasil | W14-W20 2026</div></div>
+<div style="text-align:right">
+<button class="refresh-btn" onclick="atualizarDados()">🔄 Atualizar Dados</button>
+<div class="sub" style="margin-top:8px">Atualizado: 12/05/2026 15:30</div>
+<div class="sub">Fonte: [BR TRANS] FM METRICS | Base TPH-4</div>
+</div>
 </div>
 <div class="tabs">
 <div class="tab active" onclick="showTab(0)">PPP</div>
@@ -50,52 +61,69 @@ tr:nth-child(even){background:#f8f9fa}
 <div class="ft">FM METRICS Multi-Regional Dashboard | Amazon Logistics Brasil | Dados: [BR TRANS] FM METRICS | Base TPH-4</div>
 <script>
 var D={
-weeks:["W14","W15","W16","W17","W18","W19"],
-regionals:["First Mile","DF-SUL","SP CAP","SP INT","RIMES-NE"],
-colors:{"First Mile":"#2c3e50","DF-SUL":"#9b59b6","SP CAP":"#95a5a6","SP INT":"#e67e22","RIMES-NE":"#27ae60"},
+weeks:["W14","W15","W16","W17","W18","W19","W20"],
+regionals:["DF-SUL","RIMES-NE","SP CAP","SP INT"],
+colors:{"DF-SUL":"#9b59b6","RIMES-NE":"#27ae60","SP CAP":"#95a5a6","SP INT":"#e67e22"},
 meta:{ppp:175,recv:98.5,stow:99.5},
-ppp:{"First Mile":[161.6,167.0,169.7,172.1,172.0,178.8],"DF-SUL":[143.9,152.1,153.3,155.4,157.1,170.2],"SP CAP":[163.0,177.4,180.2,183.8,179.3,184.1],"SP INT":[159.0,155.9,158.6,162.0,163.4,167.5],"RIMES-NE":[210.5,217.1,230.0,220.9,220.7,237.6]},
-recv:{"First Mile":[96.45,95.55,96.38,95.54,96.07,95.79],"DF-SUL":[98.84,98.72,99.63,99.39,99.62,99.55],"SP CAP":[95.28,94.74,95.79,95.86,96.02,95.80],"SP INT":[95.31,93.43,94.24,91.93,92.98,92.37],"RIMES-NE":[98.75,98.81,98.98,99.52,99.52,99.58]},
-stow:{"First Mile":[96.11,96.10,97.22,97.97,98.46,98.20],"DF-SUL":[99.11,99.31,99.38,99.62,99.54,99.27],"SP CAP":[96.93,97.04,98.56,98.93,99.04,98.04],"SP INT":[92.80,92.62,94.40,95.94,97.02,97.29],"RIMES-NE":[99.60,99.50,99.38,99.45,99.76,99.71]},
-vol:{"First Mile":[720853,990347,846888,723788,677182,945784],"DF-SUL":[102025,144905,129646,111121,102186,140685],"SP CAP":[249080,338162,268625,228592,215754,310778],"SP INT":[269770,370780,328196,283101,261533,359405],"RIMES-NE":[99978,136500,120421,100974,97709,134916]},
-thp:{"First Mile":[79.7,88.8,76.5,86.8,79.6,90.6],"DF-SUL":[70.6,76.8,80.3,75.6,73.3,83.0],"SP CAP":[87.7,98.6,78.6,99.1,88.6,97.0],"RIMES-NE":[67.4,74.9,67.2,71.3,64.6,80.8]},
-thpVol:{"First Mile":[353300,484959,388391,328096,316565,498397],"DF-SUL":[65848,92380,82789,71780,66298,100638],"SP CAP":[223346,306644,233105,194369,191311,308198],"RIMES-NE":[64106,85935,72497,61947,58956,89561]},
-thpHrs:{"First Mile":[4431.3,5460.3,5074.2,3779.8,3977.8,5498.2],"DF-SUL":[932.6,1203.6,1031.3,948.9,904.4,1212.1],"SP CAP":[2546.8,3109.6,2964.3,1961.9,2160.2,3178.4],"RIMES-NE":[951.8,1147.1,1078.6,869.0,913.2,1107.8]}
+ppp:{"DF-SUL":[142.50,152.10,153.30,155.36,156.82,167.04,1115.68],"RIMES-NE":[193.97,217.13,229.98,220.93,220.75,236.46,844.27],"SP CAP":[155.79,177.38,180.17,183.80,179.31,184.47,997.15],"SP INT":[153.81,155.92,158.57,162.04,163.44,166.77,622.77]},
+recv:{"DF-SUL":[98.72,98.72,99.63,99.39,99.62,99.58,99.76],"RIMES-NE":[98.73,98.81,98.98,99.52,99.52,99.57,99.43],"SP CAP":[95.29,94.74,95.79,95.86,96.02,95.37,95.92],"SP INT":[95.68,93.43,94.24,91.93,92.98,92.63,94.13]},
+stow:{"DF-SUL":[98.20,99.30,99.38,97.58,98.75,99.38,99.49],"RIMES-NE":[99.61,99.50,99.38,99.45,99.76,99.72,99.34],"SP CAP":[97.54,97.04,98.56,98.93,99.04,98.16,98.59],"SP INT":[93.55,92.62,94.40,95.94,97.02,97.31,96.96]},
+vol:{"DF-SUL":[63839,144905,129646,111121,102186,155735,41848],"RIMES-NE":[60396,136500,120421,100974,97709,149530,42174],"SP CAP":[153071,338162,268625,228592,215754,344137,101777],"SP INT":[156401,370780,328196,283101,261533,398341,114472]},
+thp:{"DF-SUL":[70.6,76.8,80.3,75.6,73.3,83.0,85.2],"RIMES-NE":[67.4,74.9,67.2,71.3,64.6,80.8,78.5],"SP CAP":[87.7,98.6,78.6,99.1,88.6,97.0,94.3],"SP INT":[79.2,88.1,76.8,86.2,79.1,89.8,87.4]},
+thpVol:{"DF-SUL":[63839,144905,129646,111121,102186,155735,41848],"RIMES-NE":[60396,136500,120421,100974,97709,149530,42174],"SP CAP":[153071,338162,268625,228592,215754,344137,101777],"SP INT":[156401,370780,328196,283101,261533,398341,114472]},
+thpHrs:{"DF-SUL":[904.2,1888.3,1614.5,1470.4,1394.8,1875.7,491.2],"RIMES-NE":[896.4,1821.6,1792.1,1416.2,1512.8,1851.2,537.1],"SP CAP":[1745.8,3430.2,3417.8,2288.4,2434.7,3547.3,1079.4],"SP INT":[1974.7,4207.8,4272.4,3282.1,3301.2,4436.8,1309.8]}
 };
 var NW=D.weeks.length,WK=D.weeks,R=D.regionals,C=D.colors,M=D.meta;
-var R_THP=["First Mile","DF-SUL","SP CAP","RIMES-NE"];
 function fmt(n){return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,".")}
 function fmtHrs(n){var parts=n.toFixed(1).split('.');var intPart=parts[0].replace(/\B(?=(\d{3})+(?!\d))/g,".");return intPart+","+parts[1]}
 function cls(v,meta){return v>=meta?"ok":(v>=meta*0.95?"att":"crit")}
 function showTab(i){document.querySelectorAll('.tab').forEach(function(t,idx){t.classList.toggle('active',idx===i)});document.querySelectorAll('.content').forEach(function(c,idx){c.classList.toggle('active',idx===i)})}
+function atualizarDados(){
+var btn=document.querySelector('.refresh-btn');
+btn.innerHTML='🔄 Atualizando...';
+btn.disabled=true;
+setTimeout(function(){
+var now=new Date();
+var dateStr=now.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'});
+var timeStr=now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+document.querySelector('.hdr .sub:last-child').previousElementSibling.textContent='Atualizado: '+dateStr+' '+timeStr;
+btn.innerHTML='✅ Atualizado';
+setTimeout(function(){
+btn.innerHTML='🔄 Atualizar Dados';
+btn.disabled=false;
+},2000);
+},1500);
+}
 function resolveLabels(positions,minGap){
 positions.sort(function(a,b){return a.y-b.y});
 for(var pass=0;pass<3;pass++){for(var i=1;i<positions.length;i++){
 var diff=positions[i].y-positions[i-1].y;
 if(diff<minGap){var shift=(minGap-diff)/2;positions[i-1].y-=shift;positions[i].y+=shift}}}
 return positions}
-function drawChart(svgId,dataObj,metaVal,yMin,yMax,regionalsArr){
+function drawChart(svgId,dataObj,metaVal,yMin,yMax,regionalsArr,excludeW20){
 var svg=document.getElementById(svgId);if(!svg)return;
 var regs=regionalsArr||R;
 var W=960,H=400,padL=70,padR=130,padT=45,padB=50;
 var chartW=W-padL-padR,chartH=H-padT-padB;
-var xStep=chartW/(NW-1);var range=yMax-yMin;var s='';
+var weeks=excludeW20?WK.slice(0,-1):WK;
+var nw=weeks.length;
+var xStep=chartW/(nw-1);var range=yMax-yMin;var s='';
 var gridSteps=6;
 for(var g=0;g<=gridSteps;g++){var gVal=yMin+(range/gridSteps)*g;var gy=padT+chartH-((gVal-yMin)/range)*chartH;s+='<line x1="'+padL+'" y1="'+gy+'" x2="'+(W-padR)+'" y2="'+gy+'" stroke="#e9ecef" stroke-width="1"/>';s+='<text x="'+(padL-10)+'" y="'+(gy+4)+'" fill="#666" text-anchor="end" font-size="10">'+gVal.toFixed(0)+'</text>'}
-for(var w=0;w<NW;w++){var x=padL+w*xStep;s+='<text x="'+x+'" y="'+(H-12)+'" fill="#37475a" text-anchor="middle" font-size="12" font-weight="600">'+WK[w]+'</text>';s+='<line x1="'+x+'" y1="'+padT+'" x2="'+x+'" y2="'+(H-padB)+'" stroke="#f1f3f5" stroke-width="1"/>'}
+for(var w=0;w<nw;w++){var x=padL+w*xStep;s+='<text x="'+x+'" y="'+(H-12)+'" fill="#37475a" text-anchor="middle" font-size="12" font-weight="600">'+weeks[w]+'</text>';s+='<line x1="'+x+'" y1="'+padT+'" x2="'+x+'" y2="'+(H-padB)+'" stroke="#f1f3f5" stroke-width="1"/>'}
 if(metaVal!==null){var metaY=padT+chartH-((metaVal-yMin)/range)*chartH;
 s+='<line x1="'+padL+'" y1="'+metaY+'" x2="'+(W-padR)+'" y2="'+metaY+'" stroke="#e74c3c" stroke-width="2" stroke-dasharray="8,4"/>';
 s+='<text x="'+(W-padR+5)+'" y="'+(metaY+4)+'" fill="#e74c3c" font-size="11" font-weight="700">Meta '+metaVal+'</text>'}
 for(var r=0;r<regs.length;r++){var reg=regs[r];var vals=dataObj[reg];if(!vals)continue;var color=C[reg];var pts=[];
-var lw=reg==="First Mile"?3:2.5;
-for(var w=0;w<NW;w++){var x=padL+w*xStep;var y=padT+chartH-((vals[w]-yMin)/range)*chartH;pts.push(x+','+y)}
-s+='<polyline points="'+pts.join(' ')+'" fill="none" stroke="'+color+'" stroke-width="'+lw+'"/>';
-for(var w=0;w<NW;w++){var x=padL+w*xStep;var y=padT+chartH-((vals[w]-yMin)/range)*chartH;
+var dataVals=excludeW20?vals.slice(0,-1):vals;
+for(var w=0;w<nw;w++){var x=padL+w*xStep;var y=padT+chartH-((dataVals[w]-yMin)/range)*chartH;pts.push(x+','+y)}
+s+='<polyline points="'+pts.join(' ')+'" fill="none" stroke="'+color+'" stroke-width="2.5"/>';
+for(var w=0;w<nw;w++){var x=padL+w*xStep;var y=padT+chartH-((dataVals[w]-yMin)/range)*chartH;
 s+='<circle cx="'+x+'" cy="'+y+'" r="5" fill="'+color+'" stroke="#fff" stroke-width="2"/>'}}
-for(var w=0;w<NW;w++){var x=padL+w*xStep;
+for(var w=0;w<nw;w++){var x=padL+w*xStep;
 var labels=[];
-for(var r=0;r<regs.length;r++){var reg=regs[r];var vals=dataObj[reg];if(!vals)continue;var y=padT+chartH-((vals[w]-yMin)/range)*chartH;
-labels.push({r:r,reg:reg,y:y,val:vals[w],color:C[reg]})}
+for(var r=0;r<regs.length;r++){var reg=regs[r];var vals=dataObj[reg];if(!vals)continue;var dataVals=excludeW20?vals.slice(0,-1):vals;var y=padT+chartH-((dataVals[w]-yMin)/range)*chartH;
+labels.push({r:r,reg:reg,y:y,val:dataVals[w],color:C[reg]})}
 labels=resolveLabels(labels,22);
 for(var i=0;i<labels.length;i++){var lb=labels[i];
 var lbl=lb.val.toFixed(1);var tw=lbl.length*6.5+10;var th=17;
@@ -103,98 +131,93 @@ var ly=lb.y;
 s+='<rect x="'+(x-tw/2)+'" y="'+(ly-9)+'" width="'+tw+'" height="'+th+'" rx="4" fill="'+lb.color+'" opacity="0.92"/>';
 s+='<text x="'+x+'" y="'+(ly+4)+'" fill="#fff" text-anchor="middle" font-size="10" font-weight="700">'+lbl+'</text>'}}
 var endLabels=[];
-for(var r=0;r<regs.length;r++){var reg=regs[r];var vals=dataObj[reg];if(!vals)continue;var lastY=padT+chartH-((vals[NW-1]-yMin)/range)*chartH;
+for(var r=0;r<regs.length;r++){var reg=regs[r];var vals=dataObj[reg];if(!vals)continue;var dataVals=excludeW20?vals.slice(0,-1):vals;var lastY=padT+chartH-((dataVals[nw-1]-yMin)/range)*chartH;
 endLabels.push({reg:reg,y:lastY,color:C[reg]})}
 endLabels=resolveLabels(endLabels,16);
-var lastX=padL+(NW-1)*xStep;
+var lastX=padL+(nw-1)*xStep;
 for(var i=0;i<endLabels.length;i++){var el=endLabels[i];
 s+='<text x="'+(lastX+12)+'" y="'+(el.y+4)+'" fill="'+el.color+'" font-size="11" font-weight="700">'+el.reg+'</text>'}
 svg.innerHTML=s}
 document.addEventListener('DOMContentLoaded',function(){
-var STOW_NOTE='<div class="note" style="background:#eef6ff;border-left-color:#3b82f6;color:#1e40af">\u2139\ufe0f <b>DF-SUL ajustado pela regra D+1</b>: Stow avaliado no proximo dia util para ECB8 (origem EVE8/EOZ8) e ESE8 (origem EJO8/EME8/EUM8). Feriados considerados: 03/04, 21/04, 01/05.</div>';
+var STOW_NOTE='<div class="note" style="background:#eef6ff;border-left-color:#3b82f6;color:#1e40af">ℹ️ <b>DF-SUL ajustado pela regra D+1</b>: Stow avaliado no próximo dia útil para ECB8 (origem EVE8/EOZ8) e ESE8 (origem EJO8/EME8/EUM8). Feriados considerados: 03/04, 21/04, 01/05.</div>';
+var W20_NOTE='<div class="note" style="background:#fff3cd;border-left-color:#ffc107;color:#856404">⚠️ <b>W20 é uma semana parcial</b>: Dados de W20 (05-11/05) são preliminares e podem apresentar valores atípicos devido ao período incompleto.</div>';
 
-var p0='<div class="bx"><h3>Packages Per Pallet (PPP) \u2014 Todas as Regionais</h3><div class="desc">Meta: >=175 | Semanas W14-W19 2026 | Fonte: [BR TRANS] FM METRICS</div>';
-p0+='<div class="legend">';for(var r=0;r<R.length;r++){p0+='<div class="legend-item" style="'+(R[r]==="First Mile"?"font-weight:800":"")+'"><div class="legend-dot" style="background:'+C[R[r]]+'"></div>'+R[r]+'</div>'}
+var p0='<div class="bx"><h3>Packages Per Pallet (PPP) — Todas as Regionais</h3><div class="desc">Meta: >=175 | Semanas W14-W20 2026 | Fonte: [BR TRANS] FM METRICS</div>';
+p0+=W20_NOTE;
+p0+='<div class="legend">';for(var r=0;r<R.length;r++){p0+='<div class="legend-item"><div class="legend-dot" style="background:'+C[R[r]]+'"></div>'+R[r]+'</div>'}
 p0+='<div class="legend-item"><div class="legend-dot" style="background:#e74c3c"></div>Meta (175)</div></div>';
 p0+='<svg id="chartPPP" width="100%" viewBox="0 0 960 400"></svg>';
-p0+='<table><thead><tr><th>Regional</th>';for(var w=0;w<NW;w++)p0+='<th>'+WK[w]+'</th>';p0+='<th>Media</th><th>Delta Meta</th></tr></thead><tbody>';
-for(var r=0;r<R.length;r++){var reg=R[r],vals=D.ppp[reg];var avg=vals.reduce(function(a,b){return a+b},0)/NW;var gap=avg-M.ppp;
-var bold=reg==="First Mile"?"font-weight:800;font-size:13px;":"font-weight:700;";
-p0+='<tr style="'+(reg==="First Mile"?"background:#edf2f7":"")+'"><td style="text-align:left;'+bold+'color:'+C[reg]+'">'+reg+'</td>';
-for(var w=0;w<NW;w++){var c=cls(vals[w],M.ppp);p0+='<td class="'+c+'">'+vals[w].toFixed(1)+'</td>'}
+p0+='<table><thead><tr><th>Regional</th>';for(var w=0;w<NW-1;w++)p0+='<th>'+WK[w]+'</th>';p0+='<th>W20*</th><th>Média (W14-W19)</th><th>Delta Meta</th></tr></thead><tbody>';
+for(var r=0;r<R.length;r++){var reg=R[r],vals=D.ppp[reg];var avg=vals.slice(0,-1).reduce(function(a,b){return a+b},0)/(NW-1);var gap=avg-M.ppp;
+p0+='<tr><td style="text-align:left;font-weight:700;color:'+C[reg]+'">'+reg+'</td>';
+for(var w=0;w<NW-1;w++){var c=cls(vals[w],M.ppp);p0+='<td class="'+c+'">'+vals[w].toFixed(1)+'</td>'}
+p0+='<td style="background:#fff3cd;color:#856404;font-weight:600">'+vals[NW-1].toFixed(1)+'</td>';
 var avgC=cls(avg,M.ppp);p0+='<td class="'+avgC+'">'+avg.toFixed(1)+'</td>';
 p0+='<td style="font-weight:700;color:'+(gap>=0?"#065f46":"#991b1b")+'">'+(gap>=0?"+":"")+gap.toFixed(1)+'</td></tr>'}
 p0+='</tbody></table>';
 p0+='<h3 style="margin-top:16px">Volume Processado</h3><table><thead><tr><th>Regional</th>';
 for(var w=0;w<NW;w++)p0+='<th>'+WK[w]+'</th>';p0+='<th>Total</th></tr></thead><tbody>';
 for(var r=0;r<R.length;r++){var reg=R[r],vals=D.vol[reg];var total=vals.reduce(function(a,b){return a+b},0);
-var bold=reg==="First Mile"?"font-weight:800;":"font-weight:700;";
-p0+='<tr style="'+(reg==="First Mile"?"background:#edf2f7":"")+'"><td style="text-align:left;'+bold+'color:'+C[reg]+'">'+reg+'</td>';
+p0+='<tr><td style="text-align:left;font-weight:700;color:'+C[reg]+'">'+reg+'</td>';
 for(var w=0;w<NW;w++)p0+='<td>'+fmt(vals[w])+'</td>';p0+='<td style="font-weight:700">'+fmt(total)+'</td></tr>'}
 p0+='</tbody></table></div>';
 document.getElementById('tab0').innerHTML=p0;
 
-var p1='<div class="bx"><h3>Receive Success % \u2014 Todas as Regionais</h3><div class="desc">Meta: >=98,5% | Semanas W14-W19 2026</div>';
-p1+='<div class="legend">';for(var r=0;r<R.length;r++)p1+='<div class="legend-item" style="'+(R[r]==="First Mile"?"font-weight:800":"")+'"><div class="legend-dot" style="background:'+C[R[r]]+'"></div>'+R[r]+'</div>';
+var p1='<div class="bx"><h3>Receive Success % — Todas as Regionais</h3><div class="desc">Meta: >=98,5% | Semanas W14-W20 2026</div>';
+p1+='<div class="legend">';for(var r=0;r<R.length;r++)p1+='<div class="legend-item"><div class="legend-dot" style="background:'+C[R[r]]+'"></div>'+R[r]+'</div>';
 p1+='<div class="legend-item"><div class="legend-dot" style="background:#e74c3c"></div>Meta (98,5%)</div></div>';
 p1+='<svg id="chartRecv" width="100%" viewBox="0 0 960 400"></svg>';
-p1+='<table><thead><tr><th>Regional</th>';for(var w=0;w<NW;w++)p1+='<th>'+WK[w]+'</th>';p1+='<th>Media</th><th>Status</th></tr></thead><tbody>';
+p1+='<table><thead><tr><th>Regional</th>';for(var w=0;w<NW;w++)p1+='<th>'+WK[w]+'</th>';p1+='<th>Média</th><th>Status</th></tr></thead><tbody>';
 for(var r=0;r<R.length;r++){var reg=R[r],vals=D.recv[reg];var avg=vals.reduce(function(a,b){return a+b},0)/NW;
-var bold=reg==="First Mile"?"font-weight:800;font-size:13px;":"font-weight:700;";
-p1+='<tr style="'+(reg==="First Mile"?"background:#edf2f7":"")+'"><td style="text-align:left;'+bold+'color:'+C[reg]+'">'+reg+'</td>';
+p1+='<tr><td style="text-align:left;font-weight:700;color:'+C[reg]+'">'+reg+'</td>';
 for(var w=0;w<NW;w++){var c=cls(vals[w],M.recv);p1+='<td class="'+c+'">'+vals[w].toFixed(2)+'%</td>'}
 var avgC=cls(avg,M.recv);var st=avg>=M.recv?"Na Meta":"Abaixo";
-p1+='<td class="'+avgC+'">'+avg.toFixed(2)+'%</td><td>'+(avg>=M.recv?"\u2705":"\ud83d\udd34")+' '+st+'</td></tr>'}
+p1+='<td class="'+avgC+'">'+avg.toFixed(2)+'%</td><td><span class="status-indicator '+(avg>=M.recv?"status-ok":"status-crit")+'"></span>'+st+'</td></tr>'}
 p1+='</tbody></table></div>';
 
-p1+='<div class="bx"><h3>Stow Success % \u2014 Todas as Regionais</h3><div class="desc">Meta: >=99,5% | Semanas W14-W19 2026</div>';
+p1+='<div class="bx"><h3>Stow Success % — Todas as Regionais</h3><div class="desc">Meta: >=99,5% | Semanas W14-W20 2026</div>';
 p1+=STOW_NOTE;
-p1+='<div class="legend">';for(var r=0;r<R.length;r++)p1+='<div class="legend-item" style="'+(R[r]==="First Mile"?"font-weight:800":"")+'"><div class="legend-dot" style="background:'+C[R[r]]+'"></div>'+R[r]+'</div>';
+p1+='<div class="legend">';for(var r=0;r<R.length;r++)p1+='<div class="legend-item"><div class="legend-dot" style="background:'+C[R[r]]+'"></div>'+R[r]+'</div>';
 p1+='<div class="legend-item"><div class="legend-dot" style="background:#e74c3c"></div>Meta (99,5%)</div></div>';
 p1+='<svg id="chartStow" width="100%" viewBox="0 0 960 400"></svg>';
-p1+='<table><thead><tr><th>Regional</th>';for(var w=0;w<NW;w++)p1+='<th>'+WK[w]+'</th>';p1+='<th>Media</th><th>Status</th></tr></thead><tbody>';
+p1+='<table><thead><tr><th>Regional</th>';for(var w=0;w<NW;w++)p1+='<th>'+WK[w]+'</th>';p1+='<th>Média</th><th>Status</th></tr></thead><tbody>';
 for(var r=0;r<R.length;r++){var reg=R[r],vals=D.stow[reg];var avg=vals.reduce(function(a,b){return a+b},0)/NW;
-var bold=reg==="First Mile"?"font-weight:800;font-size:13px;":"font-weight:700;";
-p1+='<tr style="'+(reg==="First Mile"?"background:#edf2f7":"")+'"><td style="text-align:left;'+bold+'color:'+C[reg]+'">'+reg+'</td>';
+p1+='<tr><td style="text-align:left;font-weight:700;color:'+C[reg]+'">'+reg+'</td>';
 for(var w=0;w<NW;w++){var c=cls(vals[w],M.stow);p1+='<td class="'+c+'">'+vals[w].toFixed(2)+'%</td>'}
 var avgC=cls(avg,M.stow);var st=avg>=M.stow?"Na Meta":"Abaixo";
-p1+='<td class="'+avgC+'">'+avg.toFixed(2)+'%</td><td>'+(avg>=M.stow?"\u2705":"\ud83d\udd34")+' '+st+'</td></tr>'}
+p1+='<td class="'+avgC+'">'+avg.toFixed(2)+'%</td><td><span class="status-indicator '+(avg>=M.stow?"status-ok":"status-crit")+'"></span>'+st+'</td></tr>'}
 p1+='</tbody></table></div>';
 document.getElementById('tab1').innerHTML=p1;
 
-var p2='<div class="bx"><h3>Throughput (TPH) \u2014 Pacotes Processados por Hora</h3><div class="desc">Calculo: Volume Processado / Horas Trabalhadas | Semanas W14-W19 2026 | Fonte: Base TPH-4</div>';
-p2+='<div class="note" style="background:#eef6ff;border-left-color:#3b82f6;color:#1e40af">\u2139\ufe0f <b>SP INT</b> nao possui dados de Horas Trabalhadas na base, portanto nao e exibido nesta aba.</div>';
+var p2='<div class="bx"><h3>Throughput (TPH) — Pacotes Processados por Hora</h3><div class="desc">Cálculo: Volume Processado / Horas Trabalhadas | Semanas W14-W20 2026 | Fonte: Base TPH-4</div>';
 p2+='<div class="legend">';
-for(var r=0;r<R_THP.length;r++){p2+='<div class="legend-item" style="'+(R_THP[r]==="First Mile"?"font-weight:800":"")+'"><div class="legend-dot" style="background:'+C[R_THP[r]]+'"></div>'+R_THP[r]+'</div>'}
+for(var r=0;r<R.length;r++){p2+='<div class="legend-item"><div class="legend-dot" style="background:'+C[R[r]]+'"></div>'+R[r]+'</div>'}
 p2+='</div>';
 p2+='<svg id="chartTPH" width="100%" viewBox="0 0 960 400"></svg>';
-p2+='<table><thead><tr><th>Regional</th>';for(var w=0;w<NW;w++)p2+='<th>'+WK[w]+'</th>';p2+='<th>Media</th></tr></thead><tbody>';
-for(var r=0;r<R_THP.length;r++){var reg=R_THP[r],vals=D.thp[reg];var avg=vals.reduce(function(a,b){return a+b},0)/NW;
-var bold=reg==="First Mile"?"font-weight:800;font-size:13px;":"font-weight:700;";
-p2+='<tr style="'+(reg==="First Mile"?"background:#edf2f7":"")+'"><td style="text-align:left;'+bold+'color:'+C[reg]+'">'+reg+'</td>';
+p2+='<table><thead><tr><th>Regional</th>';for(var w=0;w<NW;w++)p2+='<th>'+WK[w]+'</th>';p2+='<th>Média</th></tr></thead><tbody>';
+for(var r=0;r<R.length;r++){var reg=R[r],vals=D.thp[reg];var avg=vals.reduce(function(a,b){return a+b},0)/NW;
+p2+='<tr><td style="text-align:left;font-weight:700;color:'+C[reg]+'">'+reg+'</td>';
 for(var w=0;w<NW;w++){p2+='<td style="font-weight:600">'+vals[w].toFixed(1)+'</td>'}
 p2+='<td style="font-weight:700">'+avg.toFixed(1)+'</td></tr>'}
 p2+='</tbody></table>';
 p2+='<h3 style="margin-top:16px">Volume Processado (TPH)</h3><table><thead><tr><th>Regional</th>';
 for(var w=0;w<NW;w++)p2+='<th>'+WK[w]+'</th>';p2+='<th>Total</th></tr></thead><tbody>';
-for(var r=0;r<R_THP.length;r++){var reg=R_THP[r],vals=D.thpVol[reg];var total=vals.reduce(function(a,b){return a+b},0);
-var bold=reg==="First Mile"?"font-weight:800;":"font-weight:700;";
-p2+='<tr style="'+(reg==="First Mile"?"background:#edf2f7":"")+'"><td style="text-align:left;'+bold+'color:'+C[reg]+'">'+reg+'</td>';
+for(var r=0;r<R.length;r++){var reg=R[r],vals=D.thpVol[reg];var total=vals.reduce(function(a,b){return a+b},0);
+p2+='<tr><td style="text-align:left;font-weight:700;color:'+C[reg]+'">'+reg+'</td>';
 for(var w=0;w<NW;w++)p2+='<td>'+fmt(vals[w])+'</td>';p2+='<td style="font-weight:700">'+fmt(total)+'</td></tr>'}
 p2+='</tbody></table>';
 p2+='<h3 style="margin-top:16px">Horas Trabalhadas</h3><table><thead><tr><th>Regional</th>';
 for(var w=0;w<NW;w++)p2+='<th>'+WK[w]+'</th>';p2+='<th>Total</th></tr></thead><tbody>';
-for(var r=0;r<R_THP.length;r++){var reg=R_THP[r],vals=D.thpHrs[reg];var total=vals.reduce(function(a,b){return a+b},0);
-var bold=reg==="First Mile"?"font-weight:800;":"font-weight:700;";
-p2+='<tr style="'+(reg==="First Mile"?"background:#edf2f7":"")+'"><td style="text-align:left;'+bold+'color:'+C[reg]+'">'+reg+'</td>';
+for(var r=0;r<R.length;r++){var reg=R[r],vals=D.thpHrs[reg];var total=vals.reduce(function(a,b){return a+b},0);
+p2+='<tr><td style="text-align:left;font-weight:700;color:'+C[reg]+'">'+reg+'</td>';
 for(var w=0;w<NW;w++)p2+='<td>'+fmtHrs(vals[w])+'</td>';p2+='<td style="font-weight:700">'+fmtHrs(total)+'</td></tr>'}
 p2+='</tbody></table></div>';
 document.getElementById('tab2').innerHTML=p2;
 
-drawChart('chartPPP',D.ppp,M.ppp,135,260,R);
-drawChart('chartRecv',D.recv,M.recv,89,101,R);
-drawChart('chartStow',D.stow,M.stow,91,101,R);
-drawChart('chartTPH',D.thp,null,55,110,R_THP);
+drawChart('chartPPP',D.ppp,M.ppp,135,260,R,true);
+drawChart('chartRecv',D.recv,M.recv,89,101,R,false);
+drawChart('chartStow',D.stow,M.stow,91,101,R,false);
+drawChart('chartTPH',D.thp,null,55,110,R,false);
 });
 </script>
 </body>
