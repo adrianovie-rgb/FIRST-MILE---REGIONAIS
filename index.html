@@ -47,8 +47,8 @@ tr:nth-child(even){background:#f8f9fa}
 <div><h1>FM METRICS &#8212; Vis&#227;o Multi-Regional</h1><div class="sub">Amazon Logistics Brasil | W15-W20 2026</div></div>
 <div class="hdr-right">
 <button class="refresh-btn" id="refreshBtn" onclick="solicitarAtualizacao()">&#128260; Atualizar Dados</button>
-<div class="sub">Atualizado: 13/05/2026 20:23</div>
-<div class="sub">Fonte: [BR TRANS] FM METRICS | Base TPH-5</div>
+<div class="sub">Atualizado: 14/05/2026 16:45</div>
+<div class="sub">Fonte: [BR TRANS] FM METRICS | Base TPH-6</div>
 </div>
 </div>
 <div id="toast" class="toast"></div>
@@ -71,13 +71,12 @@ ppp:{"First Mile":[168.8,171.8,173.9,173.7,182.2,200.1],"DF-SUL":[152.1,153.3,15
 recv:{"First Mile":[95.55,96.38,95.54,96.07,95.79,96.50],"DF-SUL":[98.72,99.63,99.39,99.62,99.58,99.76],"SP CAP":[94.74,95.79,95.86,96.02,95.37,95.92],"SP INT":[93.43,94.24,91.93,92.98,92.63,94.13],"RIMES-NE":[98.81,98.98,99.52,99.52,99.57,99.43]},
 stow:{"First Mile":[96.05,97.19,97.94,98.44,98.25,98.21],"DF-SUL":[99.30,99.38,99.61,99.54,99.46,99.54],"SP CAP":[97.04,98.56,98.93,99.04,98.16,98.59],"SP INT":[92.62,94.40,95.94,97.02,97.31,96.96],"RIMES-NE":[99.50,99.38,99.45,99.76,99.72,99.34]},
 vol:{"First Mile":[990347,846888,723788,677182,1047743,300271],"DF-SUL":[144905,129646,111121,102186,155735,41848],"SP CAP":[338162,268625,228592,215754,344137,101777],"SP INT":[370780,328196,283101,261533,398341,114472],"RIMES-NE":[136500,120421,100974,97709,149530,42174]},
-thp:{"First Mile":[88.8,76.5,86.8,79.6,78.6,84.6],"DF-SUL":[76.8,80.3,75.6,73.3,83.0,81.8],"SP CAP":[98.6,78.6,99.1,88.6,75.8,85.5],"RIMES-NE":[74.9,67.2,71.3,64.6,80.8,85.7]},
-thpVol:{"First Mile":[484959,388391,328096,316565,396984,182699],"DF-SUL":[92380,82789,71780,66298,100638,45470],"SP CAP":[306644,233105,194369,191311,206785,98022],"RIMES-NE":[85935,72497,61947,58956,89561,39207]},
-thpHrs:{"First Mile":[5460.3,5074.2,3779.8,3977.8,5048.0,2160.0],"DF-SUL":[1203.6,1031.3,948.9,904.4,1212.1,555.7],"SP CAP":[3109.6,2964.3,1961.9,2160.2,2728.1,1146.7],"RIMES-NE":[1147.1,1078.6,869.0,913.2,1107.8,457.6]}
+thp:{"First Mile":[74.3,67.2,73.8,68.7,78.6,84.6],"DF-SUL":[76.8,80.2,75.6,73.3,83.0,81.8],"SP CAP":[73.0,62.3,74.0,68.5,75.8,85.5],"RIMES-NE":[74.9,67.2,71.3,64.6,80.8,85.7]},
+thpVol:{"First Mile":[387816,326678,282912,256462,396984,182699],"DF-SUL":[92380,82789,71780,66298,100638,45470],"SP CAP":[209501,171392,149185,131208,206785,98022],"RIMES-NE":[85935,72497,61947,58956,89561,39207]},
+thpHrs:{"First Mile":[5220.9,4861.6,3833.0,3733.0,5048.0,2159.9],"DF-SUL":[1203.6,1032.5,948.9,904.4,1212.1,555.7],"SP CAP":[2870.2,2750.5,2015.1,1915.4,2728.1,1146.6],"RIMES-NE":[1147.1,1078.6,869.0,913.2,1107.8,457.6]}
 };
 var NW=D.weeks.length,WK=D.weeks,R=D.regionals,C=D.colors,M=D.meta;
 var R_THP=["First Mile","DF-SUL","SP CAP","RIMES-NE"];
-
 function solicitarAtualizacao(){
 var prompt='Atualize o HTML FM METRICS Multi-Regional com os dados mais recentes do dashboard [BR TRANS] FM METRICS. Mantenha o layout, graficos, cores e estrutura identicos. Apenas substitua os valores de dados (PPP, Receive%, Stow%, Volume, TPH) e atualize o range de semanas conforme disponivel. Nao altere nada alem dos dados. Aplique a regra D+1 para Stow de ECB8 (origem EVE8/EOZ8) e ESE8 (origem EJO8/EME8/EUM8). Coleta por EOZ8 deve ter stow em EVE8 em D+0, e D+1 em ECB8. Feriados: 03/04, 21/04, 01/05.';
 navigator.clipboard.writeText(prompt).then(function(){
@@ -191,7 +190,6 @@ p0+='<tr style="'+(isFM?'background:#edf2f7':'')+'"><td style="text-align:left;f
 for(var w=0;w<NW;w++){p0+='<td>'+fmt(vals[w])+'</td>';}p0+='<td style="font-weight:700">'+fmt(total)+'</td></tr>';}
 p0+='</tbody></table></div>';
 document.getElementById('tab0').innerHTML=p0;
-
 var p1='<div class="bx"><h3>Receive Success % - Todas as Regionais</h3><div class="desc">Meta: >=98,5% | Semanas W15-W20 2026</div>';
 p1+='<div class="legend">';for(var r=0;r<R.length;r++){p1+='<div class="legend-item" style="'+(R[r]==='First Mile'?'font-weight:800':'')+'"><div class="legend-dot" style="background:'+C[R[r]]+'"></div>'+R[r]+'</div>';}
 p1+='<div class="legend-item"><div class="legend-dot" style="background:#e74c3c"></div>Meta (98,5%)</div></div>';
@@ -204,7 +202,6 @@ for(var w=0;w<NW;w++){var c=cls(vals[w],M.recv);p1+='<td class="'+c+'">'+vals[w]
 var avgC=cls(avg,M.recv);var st=avg>=M.recv?'Na Meta':'Abaixo';
 p1+='<td class="'+avgC+'">'+avg.toFixed(2)+'%</td><td>'+st+'</td></tr>';}
 p1+='</tbody></table></div>';
-
 p1+='<div class="bx"><h3>Stow Success % - Todas as Regionais (Corrigido D+1)</h3><div class="desc">Meta: >=99,5% | Semanas W15-W20 2026 | Corrigido com regra D+1 para ECB8/ESE8</div>';
 p1+=STOW_NOTE;
 p1+='<div class="legend">';for(var r=0;r<R.length;r++){p1+='<div class="legend-item" style="'+(R[r]==='First Mile'?'font-weight:800':'')+'"><div class="legend-dot" style="background:'+C[R[r]]+'"></div>'+R[r]+'</div>';}
@@ -219,8 +216,7 @@ var avgC=cls(avg,M.stow);var st=avg>=M.stow?'Na Meta':'Abaixo';
 p1+='<td class="'+avgC+'">'+avg.toFixed(2)+'%</td><td>'+st+'</td></tr>';}
 p1+='</tbody></table></div>';
 document.getElementById('tab1').innerHTML=p1;
-
-var p2='<div class="bx"><h3>Throughput (TPH) - Pacotes Processados por Hora</h3><div class="desc">Calculo: Volume Processado / Horas Trabalhadas | Semanas W15-W20 2026 | Fonte: Base TPH-5</div>';
+var p2='<div class="bx"><h3>Throughput (TPH) - Pacotes Processados por Hora</h3><div class="desc">Calculo: Volume Processado / Horas Trabalhadas | Semanas W15-W20 2026 | Fonte: Base TPH-6</div>';
 p2+='<div class="note" style="background:#eef6ff;border-left-color:#3b82f6;color:#1e40af"><b>SP INT</b> nao possui dados de Horas Trabalhadas na base, portanto nao e exibido nesta aba.</div>';
 p2+='<div class="legend">';
 for(var r=0;r<R_THP.length;r++){p2+='<div class="legend-item" style="'+(R_THP[r]==='First Mile'?'font-weight:800':'')+'"><div class="legend-dot" style="background:'+C[R_THP[r]]+'"></div>'+R_THP[r]+'</div>';}
@@ -248,7 +244,6 @@ p2+='<tr style="'+(isFM?'background:#edf2f7':'')+'"><td style="text-align:left;f
 for(var w=0;w<NW;w++){p2+='<td>'+fmtHrs(vals[w])+'</td>';}p2+='<td style="font-weight:700">'+fmtHrs(total)+'</td></tr>';}
 p2+='</tbody></table></div>';
 document.getElementById('tab2').innerHTML=p2;
-
 drawChart('chartPPP',D.ppp,M.ppp,135,280,R);
 drawChart('chartRecv',D.recv,M.recv,89,101,R);
 drawChart('chartStow',D.stow,M.stow,91,101,R);
@@ -257,4 +252,3 @@ drawChart('chartTPH',D.thp,null,55,110,R_THP);
 </script>
 </body>
 </html>
-
