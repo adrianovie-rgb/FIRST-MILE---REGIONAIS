@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -47,8 +48,8 @@ tr:nth-child(even){background:#f8f9fa}
 <div><h1>FM METRICS &#8212; Vis&#227;o Multi-Regional</h1><div class="sub">Amazon Logistics Brasil | W15-W20 2026</div></div>
 <div class="hdr-right">
 <button class="refresh-btn" id="refreshBtn" onclick="solicitarAtualizacao()">&#128260; Atualizar Dados</button>
-<div class="sub">Atualizado: 14/05/2026 16:45</div>
-<div class="sub">Fonte: [BR TRANS] FM METRICS | Base TPH-6</div>
+<div class="sub">Atualizado: 18/05/2026 16:07</div>
+<div class="sub">Fonte: [BR TRANS] FM METRICS | Base TPH-8</div>
 </div>
 </div>
 <div id="toast" class="toast"></div>
@@ -68,12 +69,12 @@ regionals:["First Mile","DF-SUL","SP CAP","SP INT","RIMES-NE"],
 colors:{"First Mile":"#2c3e50","DF-SUL":"#9b59b6","SP CAP":"#95a5a6","SP INT":"#e67e22","RIMES-NE":"#27ae60"},
 meta:{ppp:175,recv:98.5,stow:99.5},
 ppp:{"First Mile":[168.8,171.8,173.9,173.7,182.2,200.1],"DF-SUL":[152.1,153.3,155.4,156.8,166.9,175.6],"SP CAP":[177.4,180.2,183.8,179.3,184.3,204.0],"SP INT":[155.9,158.6,162.0,163.4,166.6,176.7],"RIMES-NE":[217.1,230.0,220.9,220.7,235.4,278.6]},
-recv:{"First Mile":[95.55,96.38,95.54,96.07,95.79,96.50],"DF-SUL":[98.72,99.63,99.39,99.62,99.58,99.76],"SP CAP":[94.74,95.79,95.86,96.02,95.37,95.92],"SP INT":[93.43,94.24,91.93,92.98,92.63,94.13],"RIMES-NE":[98.81,98.98,99.52,99.52,99.57,99.43]},
-stow:{"First Mile":[96.05,97.19,97.94,98.44,98.25,98.21],"DF-SUL":[99.30,99.38,99.61,99.54,99.46,99.54],"SP CAP":[97.04,98.56,98.93,99.04,98.16,98.59],"SP INT":[92.62,94.40,95.94,97.02,97.31,96.96],"RIMES-NE":[99.50,99.38,99.45,99.76,99.72,99.34]},
-vol:{"First Mile":[990347,846888,723788,677182,1047743,300271],"DF-SUL":[144905,129646,111121,102186,155735,41848],"SP CAP":[338162,268625,228592,215754,344137,101777],"SP INT":[370780,328196,283101,261533,398341,114472],"RIMES-NE":[136500,120421,100974,97709,149530,42174]},
-thp:{"First Mile":[74.3,67.2,73.8,68.7,78.6,84.6],"DF-SUL":[76.8,80.2,75.6,73.3,83.0,81.8],"SP CAP":[73.0,62.3,74.0,68.5,75.8,85.5],"RIMES-NE":[74.9,67.2,71.3,64.6,80.8,85.7]},
-thpVol:{"First Mile":[387816,326678,282912,256462,396984,182699],"DF-SUL":[92380,82789,71780,66298,100638,45470],"SP CAP":[209501,171392,149185,131208,206785,98022],"RIMES-NE":[85935,72497,61947,58956,89561,39207]},
-thpHrs:{"First Mile":[5220.9,4861.6,3833.0,3733.0,5048.0,2159.9],"DF-SUL":[1203.6,1032.5,948.9,904.4,1212.1,555.7],"SP CAP":[2870.2,2750.5,2015.1,1915.4,2728.1,1146.6],"RIMES-NE":[1147.1,1078.6,869.0,913.2,1107.8,457.6]}
+recv:{"First Mile":[95.55,96.38,95.54,96.07,95.79,97.13],"DF-SUL":[98.72,99.63,99.39,99.62,99.58,99.44],"SP CAP":[94.74,95.79,95.86,96.02,95.37,96.15],"SP INT":[93.43,94.24,91.93,92.98,92.63,95.80],"RIMES-NE":[98.81,98.98,99.52,99.52,99.57,99.36]},
+stow:{"First Mile":[96.05,97.19,97.94,98.44,98.25,98.51],"DF-SUL":[99.30,99.38,99.61,99.54,99.46,98.18],"SP CAP":[97.04,98.56,98.93,99.04,98.16,99.04],"SP INT":[92.62,94.40,95.94,97.02,97.31,97.83],"RIMES-NE":[99.50,99.38,99.45,99.76,99.72,99.55]},
+vol:{"First Mile":[990347,846888,723788,677182,1047743,793039],"DF-SUL":[144905,129646,111121,102186,155735,122903],"SP CAP":[338162,268625,228592,215754,344137,261330],"SP INT":[370780,328196,283101,261533,398341,302538],"RIMES-NE":[136500,120421,100974,97709,149530,106268]},
+thp:{"First Mile":[74.3,67.2,73.8,68.7,78.6,82.3],"DF-SUL":[76.8,80.2,75.6,73.3,83.0,94.9],"SP CAP":[73.0,62.3,74.0,68.5,75.8,78.6],"RIMES-NE":[74.9,67.2,71.3,64.6,80.8,71.3]},
+thpVol:{"First Mile":[387816,326678,282912,256462,396984,360992],"DF-SUL":[92380,82789,71780,66298,100638,93537],"SP CAP":[209501,171392,149185,131208,206785,184281],"RIMES-NE":[85935,72497,61947,58956,89561,75115]},
+thpHrs:{"First Mile":[5220.9,4861.6,3833.0,3733.0,5048.0,4385.4],"DF-SUL":[1203.6,1032.5,948.9,904.4,1212.1,986.2],"SP CAP":[2870.2,2750.5,2015.1,1915.4,2728.1,2345.0],"RIMES-NE":[1147.1,1078.6,869.0,913.2,1107.8,1054.2]}
 };
 var NW=D.weeks.length,WK=D.weeks,R=D.regionals,C=D.colors,M=D.meta;
 var R_THP=["First Mile","DF-SUL","SP CAP","RIMES-NE"];
@@ -166,7 +167,7 @@ s+='<text x="'+(lastX+12)+'" y="'+(el.y+4)+'" fill="'+el.color+'" font-size="11"
 svg.innerHTML=s;
 }
 document.addEventListener('DOMContentLoaded',function(){
-var STOW_NOTE='<div class="note" style="background:#eef6ff;border-left-color:#3b82f6;color:#1e40af"><b>DF-SUL ajustado pela regra D+1:</b> ECB8 (origem EVE8/EOZ8) e ESE8 (origem EJO8/EME8/EUM8). W19: ECB8 miss=107, ESE8 miss=12 (total 119 corrigidos). W20: ECB8 miss=23, ESE8=0 (total 23 corrigidos). Coleta EOZ8 &#8594; stow EVE8 D+0, stow ECB8 D+1.</div>';
+var STOW_NOTE='<div class="note" style="background:#eef6ff;border-left-color:#3b82f6;color:#1e40af"><b>DF-SUL ajustado pela regra D+1:</b> ECB8 (origem EVE8/EOZ8) e ESE8 (origem EJO8/EME8/EUM8). W20: ECB8 D+1 miss=65 reclassificados como OK. Coleta EOZ8 &#8594; stow EVE8 D+0, stow ECB8 D+1. Feriados: 03/04, 21/04, 01/05.</div>';
 var p0='<div class="bx"><h3>Packages Per Pallet (PPP) - Todas as Regionais</h3><div class="desc">Meta: >=175 | Semanas W15-W20 2026 | Fonte: [BR TRANS] FM METRICS</div>';
 p0+='<div class="legend">';
 for(var r=0;r<R.length;r++){p0+='<div class="legend-item" style="'+(R[r]==='First Mile'?'font-weight:800':'')+'"><div class="legend-dot" style="background:'+C[R[r]]+'"></div>'+R[r]+'</div>';}
@@ -216,7 +217,7 @@ var avgC=cls(avg,M.stow);var st=avg>=M.stow?'Na Meta':'Abaixo';
 p1+='<td class="'+avgC+'">'+avg.toFixed(2)+'%</td><td>'+st+'</td></tr>';}
 p1+='</tbody></table></div>';
 document.getElementById('tab1').innerHTML=p1;
-var p2='<div class="bx"><h3>Throughput (TPH) - Pacotes Processados por Hora</h3><div class="desc">Calculo: Volume Processado / Horas Trabalhadas | Semanas W15-W20 2026 | Fonte: Base TPH-6</div>';
+var p2='<div class="bx"><h3>Throughput (TPH) - Pacotes Processados por Hora</h3><div class="desc">Calculo: Volume Processado / Horas Trabalhadas | Semanas W15-W20 2026 | Fonte: Base TPH-8</div>';
 p2+='<div class="note" style="background:#eef6ff;border-left-color:#3b82f6;color:#1e40af"><b>SP INT</b> nao possui dados de Horas Trabalhadas na base, portanto nao e exibido nesta aba.</div>';
 p2+='<div class="legend">';
 for(var r=0;r<R_THP.length;r++){p2+='<div class="legend-item" style="'+(R_THP[r]==='First Mile'?'font-weight:800':'')+'"><div class="legend-dot" style="background:'+C[R_THP[r]]+'"></div>'+R_THP[r]+'</div>';}
@@ -252,3 +253,4 @@ drawChart('chartTPH',D.thp,null,55,110,R_THP);
 </script>
 </body>
 </html>
+
