@@ -1,5 +1,5 @@
 var D = {
-  "lastUpdate": "Fri May 22 2026 00:00:00 GMT-0300 (Brasilia Standard Time) Sat Dec 30 1899 21:14:00 GMT-0306 (Brasilia Standard Time)",
+  "lastUpdate": "Sat May 23 2026 00:00:00 GMT-0300 (Brasilia Standard Time) Sat Dec 30 1899 00:32:00 GMT-0306 (Brasilia Standard Time)",
   "meta": {
     "ppp": 175,
     "recv": 98.5,
@@ -23,170 +23,170 @@ var D = {
   "regionais": {
     "DF-SUL": {
       "vol": [
-        109877,
-        99357,
-        84196,
-        78803,
-        120043,
-        111656
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
       ],
       "ppp": [
-        162.9999,
-        179.1383,
-        193.4285,
-        184.5816,
-        190.1343,
-        184.0473
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
       ],
       "recv": [
-        0.9846,
-        0.9898,
-        0.9947,
-        0.9901,
-        0.9941,
-        0.9935
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
       ],
       "stow": [
-        0.9193,
-        0.9205,
-        0.9145,
-        0.9184,
-        0.9313,
-        0.9147
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
       ],
       "dep": [
-        0.9783,
-        0.9745,
-        0.9159,
-        0.9728,
-        0.983,
-        0.9436
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
       ]
     },
     "RIMES-NE": {
       "vol": [
-        120709,
-        106282,
-        89364,
-        86246,
-        132908,
-        111135
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
       ],
       "ppp": [
-        218.2411,
-        228.4122,
-        230.5795,
-        218.6272,
-        254.26,
-        252.9796
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
       ],
       "recv": [
-        0.9907,
-        0.9913,
-        0.9955,
-        0.9953,
-        0.9965,
-        0.9922
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
       ],
       "stow": [
-        0.9904,
-        0.9902,
-        0.9886,
-        0.9958,
-        0.9975,
-        0.9919
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
       ],
       "dep": [
-        0.9849,
-        0.9853,
-        0.9932,
-        0.9864,
-        0.9883,
-        0.9803
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
       ]
     },
     "SP CAP": {
       "vol": [
-        191511,
-        154908,
-        135138,
-        121225,
-        191922,
-        175083
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
       ],
       "ppp": [
-        174.7724,
-        177.1209,
-        184.0243,
-        178.0992,
-        188.9946,
-        201.024
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
       ],
       "recv": [
-        0.9213,
-        0.9396,
-        0.9366,
-        0.9452,
-        0.9389,
-        0.9435
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
       ],
       "stow": [
-        0.949,
-        0.9727,
-        0.9743,
-        0.9769,
-        0.9546,
-        0.9768
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
       ],
       "dep": [
-        0.99,
-        0.9952,
-        0.9935,
-        0.9834,
-        0.9885,
-        0.9265
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
       ]
     },
     "SP INT": {
       "vol": [
-        276075,
-        236899,
-        200530,
-        184514,
-        277726,
-        250200
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
       ],
       "ppp": [
-        174.2041,
-        166.9649,
-        166.0373,
-        160.5848,
-        166.5855,
-        172.3577
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
       ],
       "recv": [
-        0.9135,
-        0.9174,
-        0.8901,
-        0.9126,
-        0.9223,
-        0.9544
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
       ],
       "stow": [
-        0.9029,
-        0.9241,
-        0.9377,
-        0.9547,
-        0.9586,
-        0.9738
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
       ],
       "dep": [
-        0.9079,
-        0.9412,
-        0.9948,
-        0.99,
-        0.9946,
-        0.9955
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
       ]
     }
   },
@@ -233,67 +233,92 @@ var D = {
     ]
   },
   "tph": {
-    "ECB8": {
+    "Sat Dec 30 1899 23:59:00 GMT-0306 (Brasilia Standard Time)": {
       "target": null,
       "w_anterior": null,
       "w_atual": null
     },
-    "EGO8": {
+    "Sat Dec 30 1899 23:30:00 GMT-0306 (Brasilia Standard Time)": {
       "target": null,
       "w_anterior": null,
       "w_atual": null
     },
-    "ERS8": {
+    "Sat Dec 30 1899 21:00:00 GMT-0306 (Brasilia Standard Time)": {
       "target": null,
       "w_anterior": null,
       "w_atual": null
     },
-    "ESB8": {
+    "Sat Dec 30 1899 22:00:00 GMT-0306 (Brasilia Standard Time)": {
       "target": null,
       "w_anterior": null,
       "w_atual": null
     },
-    "ESE8": {
+    "Sat Dec 30 1899 20:00:00 GMT-0306 (Brasilia Standard Time)": {
       "target": null,
       "w_anterior": null,
       "w_atual": null
     },
-    "EIJ8": {
+    "Sat Dec 30 1899 19:00:00 GMT-0306 (Brasilia Standard Time)": {
       "target": null,
       "w_anterior": null,
       "w_atual": null
     },
-    "EJO8": {
+    "Sat Dec 30 1899 08:00:00 GMT-0306 (Brasilia Standard Time)": {
       "target": null,
       "w_anterior": null,
       "w_atual": null
     },
-    "ELO8": {
+    "Sat Dec 30 1899 22:30:00 GMT-0306 (Brasilia Standard Time)": {
       "target": null,
       "w_anterior": null,
       "w_atual": null
     },
-    "EME8": {
+    "Sat Dec 30 1899 10:30:00 GMT-0306 (Brasilia Standard Time)": {
       "target": null,
       "w_anterior": null,
       "w_atual": null
     },
-    "EMR8": {
+    "Sat Dec 30 1899 06:00:00 GMT-0306 (Brasilia Standard Time)": {
       "target": null,
       "w_anterior": null,
       "w_atual": null
     },
-    "EOZ8": {
+    "Sat Dec 30 1899 17:00:00 GMT-0306 (Brasilia Standard Time)": {
       "target": null,
       "w_anterior": null,
       "w_atual": null
     },
-    "EUM8": {
+    "Sat Dec 30 1899 20:30:00 GMT-0306 (Brasilia Standard Time)": {
       "target": null,
       "w_anterior": null,
       "w_atual": null
     },
-    "EVE8": {
+    "Sat Dec 30 1899 16:00:00 GMT-0306 (Brasilia Standard Time)": {
+      "target": null,
+      "w_anterior": null,
+      "w_atual": null
+    },
+    "Sat Dec 30 1899 18:00:00 GMT-0306 (Brasilia Standard Time)": {
+      "target": null,
+      "w_anterior": null,
+      "w_atual": null
+    },
+    "Sat Dec 30 1899 16:30:00 GMT-0306 (Brasilia Standard Time)": {
+      "target": null,
+      "w_anterior": null,
+      "w_atual": null
+    },
+    "Sat Dec 30 1899 02:00:00 GMT-0306 (Brasilia Standard Time)": {
+      "target": null,
+      "w_anterior": null,
+      "w_atual": null
+    },
+    "Sat Dec 30 1899 00:29:00 GMT-0306 (Brasilia Standard Time)": {
+      "target": null,
+      "w_anterior": null,
+      "w_atual": null
+    },
+    "Sat Dec 30 1899 01:00:00 GMT-0306 (Brasilia Standard Time)": {
       "target": null,
       "w_anterior": null,
       "w_atual": null
