@@ -59,162 +59,76 @@ tr:hover td{background:#f8f9fa}
 <div class="ft">FM METRICS Multi-Regional Dashboard | Amazon Logistics Brasil</div>
 <script src="data.js"></script>
 <script>
-var WK = D.semanas;
-var NW = WK.length;
-var R = Object.keys(D.regionais);
-var C = ["#1a73e8","#555555","#e65100","#0097a7","#2e7d32"];
-var M = {recv: 98.5, stow: 99.5, dep: 99.5};
-
-function getVal(regional, semana, metric) {
-  var reg = D.regionais[regional];
-  if (!reg) return null;
-  var wk = reg[semana];
-  if (!wk) return null;
-  var v = wk[metric];
-  if (v === "" || v === null || v === undefined) return null;
-  return v;
-}
-
+var NW=D.weeks.length,WK=D.weeks,R=D.regionals,C=D.colors,M=D.meta;
+function solicitarAtualizacao(){if(confirm('Executar atualização dos dados?')){showToast('Solicitação enviada! Atualize em 2 min.');}}
 function showToast(m){var t=document.createElement('div');t.className='toast show';t.textContent=m;document.body.appendChild(t);setTimeout(function(){t.classList.remove('show');setTimeout(function(){t.remove();},300);},3000);}
 function fmt(v,d,s){if(v==null)return'—';if(s)return(v*100).toFixed(d!==undefined?d:2)+'%';return typeof v==='number'?v.toLocaleString('pt-BR'):v;}
+function fmtHrs(v){if(v==null)return'—';var h=Math.floor(v);var m=Math.round((v-h)*60);return h+'h'+String(m).padStart(2,'0');}
 function cls(v,g,b){if(v==null)return'neutral';if(typeof g==='number'){return v>=g?'good':v>=b?'warn':'bad';}return'neutral';}
 function showTab(idx){var panels=document.querySelectorAll('.panel');var tabs=document.querySelectorAll('.tab');for(var i=0;i<panels.length;i++){panels[i].classList.remove('active');tabs[i].classList.remove('active');}panels[idx].classList.add('active');tabs[idx].classList.add('active');}
-
-function resolveLabels(){
-  document.getElementById('lastUp').textContent='Atualizado: '+D.lastUpdate;
-  document.getElementById('wkLabel').textContent=WK[NW-1];
-  document.getElementById('metaInfo').textContent='Receive: '+M.recv+'% | Stow: '+M.stow+'% | Depart: '+M.dep+'%';
-}
-
-function drawChart(container,label,values,regNames,meta,isPercent,maxVal){
-  var c=document.createElement('div');c.className='chart-container';
-  var t='<div class="chart-title">'+label+'</div>';
-  for(var i=0;i<values.length;i++){
-    var val=values[i];
-    var pct=0;
-    if(val!=null){pct=isPercent?(val*100):(maxVal>0?(val/maxVal*100):0);}
-    var color=C[i%C.length];
-    var display=val!=null?(isPercent?(val*100).toFixed(2)+'%':Math.round(val).toLocaleString('pt-BR')):'—';
-    t+='<div class="bar-row"><div class="bar-label">'+regNames[i]+'</div><div class="bar-track"><div class="bar-fill" style="width:'+Math.min(pct,100)+'%;background:'+color+'"><span class="bar-text">'+display+'</span></div></div></div>';
-  }
-  if(meta!=null){t+='<div style="text-align:right;font-size:.7rem;color:#888;margin-top:5px">Meta: '+meta+'%</div>';}
-  c.innerHTML=t;container.appendChild(c);
-}
-
+function resolveLabels(){document.getElementById('lastUp').textContent='Atualizado: '+D.lastUpdate;document.getElementById('wkLabel').textContent=WK[NW-1];var mStr='';if(M){if(M.recv)mStr+='Receive: '+M.recv+'% | ';if(M.stow)mStr+='Stow: '+M.stow+'% | ';if(M.dep)mStr+='Depart: '+M.dep+'%';document.getElementById('metaInfo').textContent=mStr;}}
+function drawChart(container,label,data,meta,isPercent,max){var c=document.createElement('div');c.className='chart-container';var t='<div class="chart-title">'+label+'</div>';for(var i=0;i<data.length;i++){var val=data[i];var pct=0;if(val!=null){pct=isPercent?(val*100):(max>0?(val/max*100):0);}var color=C&&C[i]?C[i]:'#4fc3f7';var display=val!=null?(isPercent?(val*100).toFixed(2)+'%':Math.round(val).toLocaleString('pt-BR')):'—';t+='<div class="bar-row"><div class="bar-label">'+R[i]+'</div><div class="bar-track"><div class="bar-fill" style="width:'+Math.min(pct,100)+'%;background:'+color+'"><span class="bar-text">'+display+'</span></div></div></div>';}if(meta!=null){t+='<div style="text-align:right;font-size:.7rem;color:#888;margin-top:5px">Meta: '+(isPercent?meta+'%':meta)+'</div>';}c.innerHTML=t;container.appendChild(c);}
 document.addEventListener('DOMContentLoaded',function(){
-  resolveLabels();
-  var tabBar=document.getElementById('tabBar');
-  var main=document.getElementById('mainContent');
-
-  for(var w=0;w<NW;w++){
-    var tb=document.createElement('div');
-    tb.className='tab'+(w===NW-1?' active':'');
-    tb.textContent=WK[w];
-    tb.setAttribute('data-idx',String(w));
-    tb.onclick=function(){showTab(parseInt(this.getAttribute('data-idx')));};
-    tabBar.appendChild(tb);
-  }
-
-  for(var w=0;w<NW;w++){
-    var semana=WK[w];
-    var p=document.createElement('div');
-    p.className='panel'+(w===NW-1?' active':'');
-
-    var totalVol=0;
-    for(var r=0;r<R.length;r++){var v=getVal(R[r],semana,'volume');if(v)totalVol+=v;}
-
-    var grid='<div class="grid">';
-    grid+='<div class="card"><div class="card-title">Volume Total</div><div class="card-value">'+totalVol.toLocaleString('pt-BR')+'</div><div class="card-sub">Pacotes processados</div></div>';
-    for(var r=0;r<R.length;r++){
-      var vol=getVal(R[r],semana,'volume')||0;
-      var share=totalVol>0?(vol/totalVol):0;
-      grid+='<div class="card"><div class="card-title">'+R[r]+'</div><div class="card-value">'+vol.toLocaleString('pt-BR')+'</div><div class="card-sub">'+fmt(share,1,true)+' do total</div></div>';
-    }
-    grid+='</div>';
-    p.innerHTML=grid;
-
-    var recvVals=[];var stowVals=[];var depVals=[];var bklVals=[];
-    for(var r=0;r<R.length;r++){
-      recvVals.push(getVal(R[r],semana,'receive'));
-      stowVals.push(getVal(R[r],semana,'stow'));
-      depVals.push(getVal(R[r],semana,'depart'));
-      bklVals.push(getVal(R[r],semana,'backlog'));
-    }
-
-    var secRecv=document.createElement('div');secRecv.innerHTML='<div class="section-title">Receive Success %</div>';p.appendChild(secRecv);
-    drawChart(p,'Receive Success % — '+semana,recvVals,R,M.recv,true,1);
-
-    var secStow=document.createElement('div');secStow.innerHTML='<div class="section-title">Stow Success %</div>';p.appendChild(secStow);
-    drawChart(p,'Stow Success % — '+semana,stowVals,R,M.stow,true,1);
-
-    var secDep=document.createElement('div');secDep.innerHTML='<div class="section-title">Depart Success %</div>';p.appendChild(secDep);
-    drawChart(p,'Depart Success % — '+semana,depVals,R,M.dep,true,1);
-
-    var secBkl=document.createElement('div');secBkl.innerHTML='<div class="section-title">Backlog & Missort</div>';p.appendChild(secBkl);
-    var maxBkl=0;for(var r=0;r<R.length;r++){var bv=bklVals[r];if(bv&&bv>maxBkl)maxBkl=bv;}
-    drawChart(p,'FM Backlog Delay — '+semana,bklVals,R,null,false,maxBkl);
-
-    var tbl='<table><tr><th>Regional</th><th>Volume</th><th>Share</th><th>Receive%</th><th>Stow%</th><th>Depart%</th><th>Backlog</th><th>PPP</th><th>Missort</th></tr>';
-    for(var r=0;r<R.length;r++){
-      var vol=getVal(R[r],semana,'volume')||0;
-      var share=totalVol>0?(vol/totalVol):0;
-      var recv=getVal(R[r],semana,'receive');
-      var stow=getVal(R[r],semana,'stow');
-      var dep=getVal(R[r],semana,'depart');
-      var bkl=getVal(R[r],semana,'backlog');
-      var ppp=getVal(R[r],semana,'ppp');
-      var miss=getVal(R[r],semana,'missort');
-      tbl+='<tr><td style="font-weight:600">'+R[r]+'</td><td>'+fmt(vol)+'</td><td>'+fmt(share,1,true)+'</td><td class="'+cls(recv,.985,.97)+'">'+fmt(recv,2,true)+'</td><td class="'+cls(stow,.995,.98)+'">'+fmt(stow,2,true)+'</td><td class="'+cls(dep,.995,.98)+'">'+fmt(dep,2,true)+'</td><td>'+fmt(bkl)+'</td><td>'+fmt(ppp,1)+'</td><td>'+fmt(miss)+'</td></tr>';
-    }
-    tbl+='</table>';
-    var tblDiv=document.createElement('div');tblDiv.innerHTML=tbl;p.appendChild(tblDiv);
-    main.appendChild(p);
-  }
-
-  var trendPanel=document.createElement('div');trendPanel.className='panel';
-  var trendHtml='<div class="section-title">Tendência ('+NW+' Semanas)</div>';
-  trendHtml+='<table><tr><th>Regional</th>';for(var w=0;w<NW;w++)trendHtml+='<th>'+WK[w]+'</th>';trendHtml+='</tr>';
-  for(var r=0;r<R.length;r++){trendHtml+='<tr><td style="font-weight:600">'+R[r]+'</td>';for(var w=0;w<NW;w++){trendHtml+='<td>'+fmt(getVal(R[r],WK[w],'volume'))+'</td>';}trendHtml+='</tr>';}
-  trendHtml+='</table>';
-
-  trendHtml+='<div class="section-title" style="margin-top:30px">Receive % — Tendência</div><table><tr><th>Regional</th>';for(var w=0;w<NW;w++)trendHtml+='<th>'+WK[w]+'</th>';trendHtml+='</tr>';
-  for(var r=0;r<R.length;r++){trendHtml+='<tr><td style="font-weight:600">'+R[r]+'</td>';for(var w=0;w<NW;w++){var v=getVal(R[r],WK[w],'receive');trendHtml+='<td class="'+cls(v,.985,.97)+'">'+fmt(v,2,true)+'</td>';}trendHtml+='</tr>';}
-  trendHtml+='</table>';
-
-  trendHtml+='<div class="section-title" style="margin-top:30px">Stow % — Tendência</div><table><tr><th>Regional</th>';for(var w=0;w<NW;w++)trendHtml+='<th>'+WK[w]+'</th>';trendHtml+='</tr>';
-  for(var r=0;r<R.length;r++){trendHtml+='<tr><td style="font-weight:600">'+R[r]+'</td>';for(var w=0;w<NW;w++){var v=getVal(R[r],WK[w],'stow');trendHtml+='<td class="'+cls(v,.995,.98)+'">'+fmt(v,2,true)+'</td>';}trendHtml+='</tr>';}
-  trendHtml+='</table>';
-
-  trendHtml+='<div class="section-title" style="margin-top:30px">Depart % — Tendência</div><table><tr><th>Regional</th>';for(var w=0;w<NW;w++)trendHtml+='<th>'+WK[w]+'</th>';trendHtml+='</tr>';
-  for(var r=0;r<R.length;r++){trendHtml+='<tr><td style="font-weight:600">'+R[r]+'</td>';for(var w=0;w<NW;w++){var v=getVal(R[r],WK[w],'depart');trendHtml+='<td class="'+cls(v,.995,.98)+'">'+fmt(v,2,true)+'</td>';}trendHtml+='</tr>';}
-  trendHtml+='</table>';
-
-  trendPanel.innerHTML=trendHtml;main.appendChild(trendPanel);
-  var trendTab=document.createElement('div');trendTab.className='tab';trendTab.textContent='Tendência';trendTab.setAttribute('data-idx',String(NW));trendTab.onclick=function(){showTab(parseInt(this.getAttribute('data-idx')));};tabBar.appendChild(trendTab);
-
-  var resumo=document.createElement('div');resumo.className='panel';
-  var lastWk=WK[NW-1];
-  var rHtml='<div class="section-title">Resumo Executivo — '+lastWk+'</div><div class="grid">';
-  var tV=0;for(var r=0;r<R.length;r++){var v=getVal(R[r],lastWk,'volume');if(v)tV+=v;}
-  rHtml+='<div class="card"><div class="card-title">Volume Total</div><div class="card-value">'+tV.toLocaleString('pt-BR')+'</div></div>';
-  var avgR=0,avgS=0,avgD=0,cnt=0;
-  for(var r=0;r<R.length;r++){var rv=getVal(R[r],lastWk,'receive');var sv=getVal(R[r],lastWk,'stow');var dv=getVal(R[r],lastWk,'depart');if(rv!=null){avgR+=rv;avgS+=sv;avgD+=dv;cnt++;}}
-  if(cnt>0){avgR/=cnt;avgS/=cnt;avgD/=cnt;}
-  rHtml+='<div class="card"><div class="card-title">Receive Médio</div><div class="card-value '+cls(avgR,.985,.97)+'">'+fmt(avgR,2,true)+'</div></div>';
-  rHtml+='<div class="card"><div class="card-title">Stow Médio</div><div class="card-value '+cls(avgS,.995,.98)+'">'+fmt(avgS,2,true)+'</div></div>';
-  rHtml+='<div class="card"><div class="card-title">Depart Médio</div><div class="card-value '+cls(avgD,.995,.98)+'">'+fmt(avgD,2,true)+'</div></div>';
-  rHtml+='</div>';
-  resumo.innerHTML=rHtml;
-
-  var rVolVals=[];var rRecvVals=[];var rStowVals=[];var rDepVals=[];
-  for(var r=0;r<R.length;r++){rVolVals.push(getVal(R[r],lastWk,'volume')||0);rRecvVals.push(getVal(R[r],lastWk,'receive'));rStowVals.push(getVal(R[r],lastWk,'stow'));rDepVals.push(getVal(R[r],lastWk,'depart'));}
-  drawChart(resumo,'Volume por Regional — '+lastWk,rVolVals,R,null,false,Math.max.apply(null,rVolVals));
-  drawChart(resumo,'Receive % por Regional',rRecvVals,R,M.recv,true,1);
-  drawChart(resumo,'Stow % por Regional',rStowVals,R,M.stow,true,1);
-  drawChart(resumo,'Depart % por Regional',rDepVals,R,M.dep,true,1);
-
-  main.appendChild(resumo);
-  var resTab=document.createElement('div');resTab.className='tab';resTab.textContent='Resumo';resTab.setAttribute('data-idx',String(NW+1));resTab.onclick=function(){showTab(parseInt(this.getAttribute('data-idx')));};tabBar.appendChild(resTab);
+resolveLabels();
+var tabBar=document.getElementById('tabBar');var main=document.getElementById('mainContent');
+for(var w=0;w<NW;w++){var tb=document.createElement('div');tb.className='tab'+(w===NW-1?' active':'');tb.textContent=WK[w];tb.setAttribute('data-idx',w);tb.onclick=function(){showTab(parseInt(this.getAttribute('data-idx')));};tabBar.appendChild(tb);}
+for(var w=0;w<NW;w++){
+var p=document.createElement('div');p.className='panel'+(w===NW-1?' active':'');
+var grid='<div class="grid">';
+var totalVol=0;for(var r=0;r<R.length;r++){totalVol+=D.volume[r][w]||0;}
+grid+='<div class="card"><div class="card-title">Volume Total</div><div class="card-value">'+totalVol.toLocaleString('pt-BR')+'</div><div class="card-sub">Pacotes processados</div></div>';
+for(var r=0;r<R.length;r++){grid+='<div class="card"><div class="card-title">'+R[r]+'</div><div class="card-value">'+fmt(D.volume[r][w])+'</div><div class="card-sub">'+fmt(D.share[r][w],1,true)+' do total</div></div>';}
+grid+='</div>';p.innerHTML=grid;
+var secRecv=document.createElement('div');secRecv.innerHTML='<div class="section-title">Receive Success %</div>';p.appendChild(secRecv);
+drawChart(p,'Receive Success % — '+WK[w],D.receive.map(function(x){return x[w];}),M?M.recv:null,true,1);
+var secStow=document.createElement('div');secStow.innerHTML='<div class="section-title">Stow Success %</div>';p.appendChild(secStow);
+drawChart(p,'Stow Success % — '+WK[w],D.stow.map(function(x){return x[w];}),M?M.stow:null,true,1);
+var secDep=document.createElement('div');secDep.innerHTML='<div class="section-title">Depart Success %</div>';p.appendChild(secDep);
+drawChart(p,'Depart Success % — '+WK[w],D.depart.map(function(x){return x[w];}),M?M.dep:null,true,1);
+var secBkl=document.createElement('div');secBkl.innerHTML='<div class="section-title">Backlog & Missort</div>';p.appendChild(secBkl);
+var maxBkl=0;for(var r=0;r<R.length;r++){if(D.backlog[r][w]>maxBkl)maxBkl=D.backlog[r][w];}
+drawChart(p,'FM Backlog Delay — '+WK[w],D.backlog.map(function(x){return x[w];}),null,false,maxBkl);
+var tbl='<table><tr><th>Regional</th><th>Volume</th><th>Share</th><th>Receive%</th><th>Stow%</th><th>Depart%</th><th>Backlog</th><th>PPP</th><th>Missort</th></tr>';
+for(var r=0;r<R.length;r++){tbl+='<tr><td style="font-weight:600">'+R[r]+'</td><td>'+fmt(D.volume[r][w])+'</td><td>'+fmt(D.share[r][w],1,true)+'</td><td class="'+cls(D.receive[r][w],.985,.97)+'">'+fmt(D.receive[r][w],2,true)+'</td><td class="'+cls(D.stow[r][w],.995,.98)+'">'+fmt(D.stow[r][w],2,true)+'</td><td class="'+cls(D.depart[r][w],.995,.98)+'">'+fmt(D.depart[r][w],2,true)+'</td><td>'+fmt(D.backlog[r][w])+'</td><td>'+fmt(D.ppp[r][w],1)+'</td><td>'+fmt(D.missort[r][w])+'</td></tr>';}
+tbl+='</table>';var tblDiv=document.createElement('div');tblDiv.innerHTML=tbl;p.appendChild(tblDiv);
+main.appendChild(p);}
+var trendPanel=document.createElement('div');trendPanel.className='panel';
+var trendHtml='<div class="section-title">Tendência (6 Semanas)</div>';
+trendHtml+='<table><tr><th>Regional</th>';for(var w=0;w<NW;w++)trendHtml+='<th>'+WK[w]+'</th>';trendHtml+='</tr>';
+for(var r=0;r<R.length;r++){trendHtml+='<tr><td style="font-weight:600">'+R[r]+'</td>';for(var w=0;w<NW;w++){trendHtml+='<td>'+fmt(D.volume[r][w])+'</td>';}trendHtml+='</tr>';}
+trendHtml+='</table>';
+trendHtml+='<div class="section-title" style="margin-top:30px">Receive % — Tendência</div><table><tr><th>Regional</th>';for(var w=0;w<NW;w++)trendHtml+='<th>'+WK[w]+'</th>';trendHtml+='</tr>';
+for(var r=0;r<R.length;r++){trendHtml+='<tr><td style="font-weight:600">'+R[r]+'</td>';for(var w=0;w<NW;w++){trendHtml+='<td class="'+cls(D.receive[r][w],.985,.97)+'">'+fmt(D.receive[r][w],2,true)+'</td>';}trendHtml+='</tr>';}
+trendHtml+='</table>';
+trendHtml+='<div class="section-title" style="margin-top:30px">Stow % — Tendência</div><table><tr><th>Regional</th>';for(var w=0;w<NW;w++)trendHtml+='<th>'+WK[w]+'</th>';trendHtml+='</tr>';
+for(var r=0;r<R.length;r++){trendHtml+='<tr><td style="font-weight:600">'+R[r]+'</td>';for(var w=0;w<NW;w++){trendHtml+='<td class="'+cls(D.stow[r][w],.995,.98)+'">'+fmt(D.stow[r][w],2,true)+'</td>';}trendHtml+='</tr>';}
+trendHtml+='</table>';
+trendHtml+='<div class="section-title" style="margin-top:30px">Depart % — Tendência</div><table><tr><th>Regional</th>';for(var w=0;w<NW;w++)trendHtml+='<th>'+WK[w]+'</th>';trendHtml+='</tr>';
+for(var r=0;r<R.length;r++){trendHtml+='<tr><td style="font-weight:600">'+R[r]+'</td>';for(var w=0;w<NW;w++){trendHtml+='<td class="'+cls(D.depart[r][w],.995,.98)+'">'+fmt(D.depart[r][w],2,true)+'</td>';}trendHtml+='</tr>';}
+trendHtml+='</table>';
+trendPanel.innerHTML=trendHtml;main.appendChild(trendPanel);
+var trendTab=document.createElement('div');trendTab.className='tab';trendTab.textContent='Tendência';trendTab.setAttribute('data-idx',NW);trendTab.onclick=function(){showTab(parseInt(this.getAttribute('data-idx')));};tabBar.appendChild(trendTab);
+var R_VOL=D.volume.map(function(x){return x[NW-1]||0;});
+var R_RCV=D.receive.map(function(x){return x[NW-1];});
+var R_STW=D.stow.map(function(x){return x[NW-1];});
+var R_DEP=D.depart.map(function(x){return x[NW-1];});
+var R_THP=null;
+var resumo=document.createElement('div');resumo.className='panel';
+var rHtml='<div class="section-title">Resumo Executivo — '+WK[NW-1]+'</div><div class="grid">';
+var tV=0;for(var r=0;r<R.length;r++)tV+=R_VOL[r];
+rHtml+='<div class="card"><div class="card-title">Volume Total</div><div class="card-value">'+tV.toLocaleString('pt-BR')+'</div></div>';
+var avgR=0,avgS=0,avgD=0,cnt=0;for(var r=0;r<R.length;r++){if(R_RCV[r]!=null){avgR+=R_RCV[r];avgS+=R_STW[r];avgD+=R_DEP[r];cnt++;}}
+if(cnt>0){avgR/=cnt;avgS/=cnt;avgD/=cnt;}
+rHtml+='<div class="card"><div class="card-title">Receive Médio</div><div class="card-value '+cls(avgR,.985,.97)+'">'+fmt(avgR,2,true)+'</div></div>';
+rHtml+='<div class="card"><div class="card-title">Stow Médio</div><div class="card-value '+cls(avgS,.995,.98)+'">'+fmt(avgS,2,true)+'</div></div>';
+rHtml+='<div class="card"><div class="card-title">Depart Médio</div><div class="card-value '+cls(avgD,.995,.98)+'">'+fmt(avgD,2,true)+'</div></div>';
+rHtml+='</div>';
+resumo.innerHTML=rHtml;main.appendChild(resumo);
+var resTab=document.createElement('div');resTab.className='tab';resTab.textContent='Resumo';resTab.setAttribute('data-idx',NW+1);resTab.onclick=function(){showTab(parseInt(this.getAttribute('data-idx')));};tabBar.appendChild(resTab);
+drawChart(resumo,'Volume por Regional — '+WK[NW-1],R_VOL,null,false,Math.max.apply(null,R_VOL));
+drawChart(resumo,'Receive % por Regional',R_RCV,M?M.recv:null,true,1);
+drawChart(resumo,'Stow % por Regional',R_STW,M?M.stow:null,true,1);
+drawChart(resumo,'Depart % por Regional',R_DEP,M?M.dep:null,true,55,110,R_THP);
 });
 </script>
 </body>
