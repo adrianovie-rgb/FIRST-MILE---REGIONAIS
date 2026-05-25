@@ -3,271 +3,252 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FM METRICS Multi-Regional</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FM METRICS - Visao Multi-Regional</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f2f5;color:#1a1a2e;min-height:100vh}
-.hd{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);color:#fff;padding:20px 30px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
-.hd h1{font-size:1.5rem;font-weight:700;letter-spacing:-0.5px}
-.hd .sub{font-size:.85rem;opacity:.8}
-.tabs{display:flex;background:#16213e;padding:0 20px;gap:4px;flex-wrap:wrap}
-.tab{padding:12px 20px;color:rgba(255,255,255,.7);cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;font-size:.85rem;font-weight:500}
-.tab:hover{color:#fff;background:rgba(255,255,255,.05)}
-.tab.active{color:#4fc3f7;border-bottom-color:#4fc3f7}
-.container{max-width:1400px;margin:0 auto;padding:20px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;margin-bottom:25px}
-.card{background:#fff;border-radius:12px;padding:18px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
-.card-title{font-size:.75rem;text-transform:uppercase;color:#666;margin-bottom:8px;font-weight:600}
-.card-value{font-size:1.4rem;font-weight:700}
-.card-sub{font-size:.7rem;color:#888;margin-top:4px}
-table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:25px}
-th{background:#f8f9fa;padding:12px 15px;text-align:left;font-size:.75rem;text-transform:uppercase;color:#555;font-weight:600;position:sticky;top:0}
-td{padding:10px 15px;border-top:1px solid #eee;font-size:.82rem}
-tr:hover td{background:#f8f9fa}
-.good{color:#2e7d32}.bad{color:#c62828}.warn{color:#f57f17}.neutral{color:#555}
-.trend{display:inline-block;font-size:.7rem;padding:2px 6px;border-radius:4px;margin-left:5px}
-.trend-up{background:#e8f5e9;color:#2e7d32}.trend-down{background:#ffebee;color:#c62828}
-.chart-container{background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:25px}
-.chart-title{font-size:.9rem;font-weight:600;margin-bottom:15px;color:#1a1a2e}
-.bar-row{display:flex;align-items:center;margin-bottom:8px;gap:10px}
-.bar-label{min-width:80px;font-size:.75rem;color:#555;text-align:right}
-.bar-track{flex:1;height:22px;background:#f0f0f0;border-radius:6px;overflow:hidden;position:relative}
-.bar-fill{height:100%;border-radius:6px;transition:width .5s ease;display:flex;align-items:center;padding:0 8px}
-.bar-text{font-size:.7rem;color:#fff;font-weight:600;white-space:nowrap}
-.section-title{font-size:1rem;font-weight:700;margin:25px 0 15px;padding-left:10px;border-left:4px solid #4fc3f7;color:#1a1a2e}
-.ft{text-align:center;padding:20px;color:#999;font-size:.75rem}
-.panel{display:none}.panel.active{display:block}
-.toast{position:fixed;top:20px;right:20px;background:#1a1a2e;color:#fff;padding:12px 24px;border-radius:8px;font-size:.85rem;z-index:9999;opacity:0;transition:opacity .3s}
-.toast.show{opacity:1}
-@media(max-width:768px){.hd h1{font-size:1.2rem}.grid{grid-template-columns:1fr 1fr}.container{padding:15px}}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#f8f9fa;color:#1d2d35}
+.hdr{background:linear-gradient(135deg,#232f3e 0%,#37475a 100%);color:#fff;padding:18px 32px;display:flex;align-items:center;justify-content:space-between}
+.hdr h1{font-size:20px;font-weight:700;letter-spacing:0.5px}
+.hdr .sub{font-size:12px;opacity:0.8}
+.hdr-right{text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.refresh-btn{background:#ff9900;color:#232f3e;border:none;padding:10px 18px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px}
+.refresh-btn:hover{background:#ffb84d;transform:translateY(-1px);box-shadow:0 4px 12px rgba(255,153,0,0.4)}
+.refresh-btn:active{transform:translateY(0)}
+.refresh-btn.copied{background:#10b981;color:#fff}
+.toast{position:fixed;top:20px;right:20px;background:#232f3e;color:#fff;padding:14px 24px;border-radius:8px;font-size:13px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,0.3);z-index:9999;opacity:0;transform:translateY(-20px);transition:all .3s ease;pointer-events:none}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast-sub{font-size:11px;opacity:0.8;margin-top:4px}
+.tabs{display:flex;gap:0;background:#232f3e;padding:0 32px}
+.tab{padding:12px 28px;color:#adb5bd;font-size:13px;font-weight:600;cursor:pointer;border-bottom:3px solid transparent;transition:all .2s}
+.tab:hover{color:#fff}
+.tab.active{color:#ff9900;border-bottom-color:#ff9900}
+.content{display:none;padding:24px 32px;max-width:1400px;margin:0 auto}
+.content.active{display:block}
+.bx{background:#fff;border-radius:12px;padding:20px 24px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+.bx h3{font-size:16px;font-weight:700;color:#232f3e;margin-bottom:4px}
+.bx .desc{font-size:11px;color:#666;margin-bottom:16px}
+.note{background:#fff7ed;border-left:4px solid #f97316;padding:10px 14px;margin-bottom:16px;font-size:11px;color:#9a3412;border-radius:0 6px 6px 0}
+table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:12px}
+th{background:#f1f3f5;padding:8px 10px;text-align:center;font-weight:600;color:#37475a;border:1px solid #e9ecef}
+td{padding:7px 10px;text-align:center;border:1px solid #e9ecef}
+tr:nth-child(even){background:#f8f9fa}
+.ok{background:#d1fae5;color:#065f46;font-weight:700}
+.att{background:#fef3c7;color:#92400e;font-weight:700}
+.crit{background:#fee2e2;color:#991b1b;font-weight:700}
+.legend{display:flex;gap:20px;margin:12px 0 8px;flex-wrap:wrap}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600}
+.legend-dot{width:12px;height:12px;border-radius:50%}
+.ft{text-align:center;padding:16px;font-size:11px;color:#adb5bd;background:#232f3e}
 </style>
 </head>
 <body>
-<div class="hd">
-<div>
-<h1>FM METRICS Multi-Regional Dashboard</h1>
-<div class="sub" id="lastUp"></div>
-</div>
-<div style="text-align:right">
-<div class="sub">Semana: <strong id="wkLabel"></strong></div>
-<div class="sub" id="metaInfo"></div>
+<div class="hdr">
+<div><h1>FM METRICS &#8212; Vis&#227;o Multi-Regional</h1><div class="sub">Amazon Logistics Brasil | W15-W20 2026</div></div>
+<div class="hdr-right">
+<button class="refresh-btn" id="refreshBtn" onclick="solicitarAtualizacao()">&#128260; Atualizar Dados</button>
+<div class="sub">Atualizado: 19/05/2026 16:28</div>
+<div class="sub">Fonte: [BR TRANS] FM METRICS | Base TPH-10</div>
 </div>
 </div>
-<div class="tabs" id="tabBar"></div>
-<div class="container" id="mainContent"></div>
+<div id="toast" class="toast"></div>
+<div class="tabs">
+<div class="tab active" onclick="showTab(0)">PPP</div>
+<div class="tab" onclick="showTab(1)">Stow &amp; Receive</div>
+<div class="tab" onclick="showTab(2)">TPH</div>
+</div>
+<div class="content active" id="tab0"></div>
+<div class="content" id="tab1"></div>
+<div class="content" id="tab2"></div>
 <div class="ft">FM METRICS Multi-Regional Dashboard | Amazon Logistics Brasil</div>
-<script src="data.js"></script>
 <script>
-(function(){
-  if(!D || !D.regionais) return;
-  var regs = Object.keys(D.regionais);
-  var sems = D.semanas;
-  D.volume=[];D.receive=[];D.stow=[];D.depart=[];
-  D.backlog=[];D.backlog_acc=[];D.ppp=[];D.missort=[];
-  for(var i=0;i<regs.length;i++){
-    var rName=regs[i];
-    var vR=[rName],rcR=[rName],stR=[rName],dpR=[rName];
-    var bkR=[rName],baR=[rName],ppR=[rName],msR=[rName];
-    for(var j=0;j<sems.length;j++){
-      var wk=sems[j];
-      var obj=(D.regionais[rName]&&D.regionais[rName][wk])||{};
-      vR.push(obj.volume||0);
-      rcR.push(obj.receive||0);
-      stR.push(obj.stow||0);
-      dpR.push(obj.depart||0);
-      bkR.push(obj.backlog||0);
-      baR.push(obj.backlog_acc||0);
-      ppR.push(obj.ppp||0);
-      msR.push(obj.missort||0);
-    }
-    D.volume.push(vR);D.receive.push(rcR);D.stow.push(stR);D.depart.push(dpR);
-    D.backlog.push(bkR);D.backlog_acc.push(baR);D.ppp.push(ppR);D.missort.push(msR);
-  }
-})();
-</script>
-<script>
-(function(){
-  if(!D||!D.semanas||!D.volume) return;
-  var semanas=D.semanas;
-  var META_RECV=D.meta&&D.meta.receive?D.meta.receive:98.5;
-  var META_STOW=D.meta&&D.meta.stow?D.meta.stow:99.5;
-  var META_DEP=D.meta&&D.meta.depart?D.meta.depart:99.5;
-  var META_PPP=D.meta&&D.meta.ppp?D.meta.ppp:175;
-  var R_THP=D.meta&&D.meta.tph?D.meta.tph:58.96;
-
-  document.getElementById('lastUp').textContent='Atualizado: '+D.lastUpdate;
-
-  var tabBar=document.getElementById('tabBar');
-  var mainContent=document.getElementById('mainContent');
-
-  // Aba "Tendencia" + abas por semana
-  var allTabs=['Tendência'];
-  for(var s=0;s<semanas.length;s++) allTabs.push(semanas[s]);
-
-  for(var t=0;t<allTabs.length;t++){
-    var tab=document.createElement('div');
-    tab.className='tab'+(t===allTabs.length-1?' active':'');
-    tab.textContent=allTabs[t];
-    tab.setAttribute('data-idx',t);
-    tab.onclick=function(){
-      var tabs=tabBar.querySelectorAll('.tab');
-      for(var x=0;x<tabs.length;x++) tabs[x].className='tab';
-      this.className='tab active';
-      renderPanel(parseInt(this.getAttribute('data-idx')));
-    };
-    tabBar.appendChild(tab);
-  }
-
-  function fmt(v){if(v===null||v===undefined)return'-';if(v>=1000)return v.toLocaleString('pt-BR');return v;}
-  function fmtPct(v){if(v===null||v===undefined)return'-';return(v*100).toFixed(2)+'%';}
-  function fmtPctRaw(v){if(v===null||v===undefined)return'-';return v.toFixed(2)+'%';}
-  function colorPct(v,meta){if(v===null||v===undefined)return'neutral';return(v*100>=meta)?'good':'bad';}
-  function colorPctRaw(v,meta){if(v===null||v===undefined)return'neutral';return(v>=meta)?'good':'bad';}
-
-  function renderPanel(idx){
-    mainContent.innerHTML='';
-    if(idx===0){renderTrend();return;}
-    var wkIdx=idx; // index in semanas (1-based from allTabs, so subtract 1 for array)
-    var sIdx=wkIdx-1;
-    var wkName=semanas[sIdx];
-    document.getElementById('wkLabel').textContent=wkName;
-
-    // Cards totais
-    var totVol=0,totRecv=0,totStow=0,totDep=0,totBkl=0,totBklAcc=0,totPpp=0,totMiss=0,cnt=0;
-    for(var r=0;r<D.volume.length;r++){
-      var vol=D.volume[r][sIdx+1];
-      if(vol>0){
-        totVol+=vol;
-        totRecv+=D.receive[r][sIdx+1]||0;
-        totStow+=D.stow[r][sIdx+1]||0;
-        totDep+=D.depart[r][sIdx+1]||0;
-        totBkl+=D.backlog[r][sIdx+1]||0;
-        totBklAcc+=D.backlog_acc[r][sIdx+1]||0;
-        totPpp+=D.ppp[r][sIdx+1]||0;
-        totMiss+=D.missort[r][sIdx+1]||0;
-        cnt++;
-      }
-    }
-    var avgRecv=cnt>0?totRecv/cnt:0;
-    var avgStow=cnt>0?totStow/cnt:0;
-    var avgDep=cnt>0?totDep/cnt:0;
-    var avgPpp=cnt>0?totPpp/cnt:0;
-
-    var grid=document.createElement('div');grid.className='grid';
-    grid.innerHTML='<div class="card"><div class="card-title">Volume Total</div><div class="card-value">'+fmt(totVol)+'</div><div class="card-sub">Pacotes processados</div></div>'
-      +'<div class="card"><div class="card-title">Receive Success</div><div class="card-value '+colorPct(avgRecv,META_RECV)+'">'+fmtPct(avgRecv)+'</div><div class="card-sub">Meta: '+META_RECV+'%</div></div>'
-      +'<div class="card"><div class="card-title">Stow Success</div><div class="card-value '+colorPct(avgStow,META_STOW)+'">'+fmtPct(avgStow)+'</div><div class="card-sub">Meta: '+META_STOW+'%</div></div>'
-      +'<div class="card"><div class="card-title">Depart Success</div><div class="card-value '+colorPct(avgDep,META_DEP)+'">'+fmtPct(avgDep)+'</div><div class="card-sub">Meta: '+META_DEP+'%</div></div>'
-      +'<div class="card"><div class="card-title">Backlog</div><div class="card-value">'+fmt(totBkl)+'</div><div class="card-sub">Acumulado: '+fmt(totBklAcc)+'</div></div>'
-      +'<div class="card"><div class="card-title">PPP</div><div class="card-value '+colorPctRaw(avgPpp,META_PPP)+'">'+avgPpp.toFixed(1)+'</div><div class="card-sub">Meta: '+META_PPP+'</div></div>'
-      +'<div class="card"><div class="card-title">Missort</div><div class="card-value">'+fmt(totMiss)+'</div><div class="card-sub">Total de missorts</div></div>';
-    mainContent.appendChild(grid);
-
-    // Tabela por regional
-    var secTitle=document.createElement('div');secTitle.className='section-title';secTitle.textContent='Detalhamento por Regional';
-    mainContent.appendChild(secTitle);
-
-    var tbl=document.createElement('table');
-    tbl.innerHTML='<thead><tr><th>Regional</th><th>Volume</th><th>Receive %</th><th>Stow %</th><th>Depart %</th><th>Backlog</th><th>Bkl Acc</th><th>PPP</th><th>Missort</th></tr></thead>';
-    var tbody=document.createElement('tbody');
-    for(var r=0;r<D.volume.length;r++){
-      var nome=D.volume[r][0];
-      var vol=D.volume[r][sIdx+1]||0;
-      var recv=D.receive[r][sIdx+1]||0;
-      var stow=D.stow[r][sIdx+1]||0;
-      var dep=D.depart[r][sIdx+1]||0;
-      var bkl=D.backlog[r][sIdx+1]||0;
-      var bklAcc=D.backlog_acc[r][sIdx+1]||0;
-      var ppp=D.ppp[r][sIdx+1]||0;
-      var miss=D.missort[r][sIdx+1]||0;
-      var tr=document.createElement('tr');
-      tr.innerHTML='<td><strong>'+nome+'</strong></td><td>'+fmt(vol)+'</td><td class="'+colorPct(recv,META_RECV)+'">'+fmtPct(recv)+'</td><td class="'+colorPct(stow,META_STOW)+'">'+fmtPct(stow)+'</td><td class="'+colorPct(dep,META_DEP)+'">'+fmtPct(dep)+'</td><td>'+fmt(bkl)+'</td><td>'+fmt(bklAcc)+'</td><td class="'+colorPctRaw(ppp,META_PPP)+'">'+ppp.toFixed(1)+'</td><td>'+fmt(miss)+'</td>';
-      tbody.appendChild(tr);
-    }
-    tbl.appendChild(tbody);
-    mainContent.appendChild(tbl);
-
-    // Bar charts - Volume
-    renderBarChart('Volume por Regional',D.volume,sIdx+1,'#4fc3f7',false);
-    renderBarChart('Receive Success %',D.receive,sIdx+1,'#66bb6a',true);
-    renderBarChart('Stow Success %',D.stow,sIdx+1,'#ab47bc',true);
-    renderBarChart('Depart Success %',D.depart,sIdx+1,'#ffa726',true);
-  }
-
-  function renderBarChart(title,data,colIdx,color,isPct){
-    var container=document.createElement('div');container.className='chart-container';
-    var h=document.createElement('div');h.className='chart-title';h.textContent=title;
-    container.appendChild(h);
-    var maxVal=0;
-    for(var r=0;r<data.length;r++){
-      var v=data[r][colIdx]||0;
-      if(isPct) v=v*100;
-      if(v>maxVal) maxVal=v;
-    }
-    if(maxVal===0) maxVal=1;
-    for(var r=0;r<data.length;r++){
-      var nome=data[r][0];
-      var v=data[r][colIdx]||0;
-      if(isPct) v=v*100;
-      var pct=(v/maxVal)*100;
-      var row=document.createElement('div');row.className='bar-row';
-      row.innerHTML='<div class="bar-label">'+nome+'</div><div class="bar-track"><div class="bar-fill" style="width:'+pct+'%;background:'+color+'"><span class="bar-text">'+(isPct?v.toFixed(2)+'%':fmt(Math.round(v)))+'</span></div></div>';
-      container.appendChild(row);
-    }
-    mainContent.appendChild(container);
-  }
-
-  function renderTrend(){
-    document.getElementById('wkLabel').textContent='Todas';
-    var secTitle=document.createElement('div');secTitle.className='section-title';secTitle.textContent='Tendência - Todas as Semanas';
-    mainContent.appendChild(secTitle);
-
-    var metrics=[
-      {name:'Volume',data:D.volume,isPct:false},
-      {name:'Receive %',data:D.receive,isPct:true},
-      {name:'Stow %',data:D.stow,isPct:true},
-      {name:'Depart %',data:D.depart,isPct:true},
-      {name:'PPP',data:D.ppp,isPct:false},
-      {name:'Backlog',data:D.backlog,isPct:false}
-    ];
-
-    for(var m=0;m<metrics.length;m++){
-      var metric=metrics[m];
-      var container=document.createElement('div');container.className='chart-container';
-      var h=document.createElement('div');h.className='chart-title';h.textContent=metric.name+' - Evolução Semanal';
-      container.appendChild(h);
-
-      var tbl=document.createElement('table');
-      var thead='<thead><tr><th>Regional</th>';
-      for(var s=0;s<semanas.length;s++) thead+='<th>'+semanas[s]+'</th>';
-      thead+='</tr></thead>';
-      tbl.innerHTML=thead;
-      var tbody=document.createElement('tbody');
-      for(var r=0;r<metric.data.length;r++){
-        var tr=document.createElement('tr');
-        var cells='<td><strong>'+metric.data[r][0]+'</strong></td>';
-        for(var s=0;s<semanas.length;s++){
-          var v=metric.data[r][s+1]||0;
-          if(metric.isPct){
-            cells+='<td>'+fmtPct(v)+'</td>';
-          } else {
-            cells+='<td>'+fmt(Math.round(v))+'</td>';
-          }
-        }
-        tr.innerHTML=cells;
-        tbody.appendChild(tr);
-      }
-      tbl.appendChild(tbody);
-      container.appendChild(tbl);
-      mainContent.appendChild(container);
-    }
-  }
-
-  // Render ultima semana por default
-  renderPanel(allTabs.length-1);
-})();
+var D={
+weeks:["W15","W16","W17","W18","W19","W20"],
+regionals:["First Mile","DF-SUL","SP CAP","SP INT","RIMES-NE"],
+colors:{"First Mile":"#2c3e50","DF-SUL":"#9b59b6","SP CAP":"#95a5a6","SP INT":"#e67e22","RIMES-NE":"#27ae60"},
+meta:{ppp:175,recv:98.5,stow:99.5},
+ppp:{"First Mile":[168.8,171.8,173.9,173.7,182.2,184.5],"DF-SUL":[152.1,153.3,155.4,156.8,166.9,176.2],"SP CAP":[177.4,180.2,183.8,179.3,184.3,194.3],"SP INT":[155.9,158.6,162.0,163.4,166.6,171.3],"RIMES-NE":[217.1,230.0,220.9,220.7,235.4,237.3]},
+recv:{"First Mile":[95.55,96.38,95.54,96.07,95.79,97.21],"DF-SUL":[98.72,99.63,99.39,99.62,99.58,98.86],"SP CAP":[94.74,95.79,95.86,96.02,95.37,96.22],"SP INT":[93.43,94.24,91.93,92.98,92.63,96.22],"RIMES-NE":[98.81,98.98,99.52,99.52,99.57,99.34]},
+stow:{"First Mile":[96.05,97.19,97.94,98.44,98.25,98.64],"DF-SUL":[99.30,99.38,99.61,99.54,99.46,98.75],"SP CAP":[97.04,98.56,98.93,99.04,98.16,99.10],"SP INT":[92.62,94.40,95.94,97.02,97.31,97.88],"RIMES-NE":[99.50,99.38,99.45,99.76,99.72,99.49]},
+vol:{"First Mile":[990347,846888,723788,677182,1047743,951966],"DF-SUL":[144905,129646,111121,102186,155735,148518],"SP CAP":[338162,268625,228592,215754,344137,314728],"SP INT":[370780,328196,283101,261533,398341,359645],"RIMES-NE":[136500,120421,100974,97709,149530,129075]},
+thp:{"First Mile":[74.3,67.2,73.8,68.7,78.6,72.3],"DF-SUL":[76.8,80.2,75.6,73.3,83.0,74.6],"SP CAP":[73.0,62.3,74.0,68.5,75.8,74.2],"RIMES-NE":[74.9,67.2,71.3,64.6,80.8,65.5]},
+thpVol:{"First Mile":[387816,326678,282912,256462,396984,327545],"DF-SUL":[92380,82789,71780,66298,100638,73568],"SP CAP":[209501,171392,149185,131208,206785,184879],"RIMES-NE":[85935,72497,61947,58956,89561,69098]},
+thpHrs:{"First Mile":[5220.9,4861.6,3833.0,3733.0,5048.0,4532.1],"DF-SUL":[1203.6,1032.5,948.9,904.4,1212.1,986.2],"SP CAP":[2870.2,2750.5,2015.1,1915.4,2728.1,2491.8],"RIMES-NE":[1147.1,1078.6,869.0,913.2,1107.8,1054.2]}
+};
+var NW=D.weeks.length,WK=D.weeks,R=D.regionals,C=D.colors,M=D.meta;
+var R_THP=["First Mile","DF-SUL","SP CAP","RIMES-NE"];
+function solicitarAtualizacao(){
+var prompt='Atualize o HTML FM METRICS Multi-Regional com os dados mais recentes do dashboard [BR TRANS] FM METRICS. Mantenha o layout, graficos, cores e estrutura identicos. Apenas substitua os valores de dados (PPP, Receive%, Stow%, Volume, TPH) e atualize o range de semanas conforme disponivel. Nao altere nada alem dos dados. Aplique a regra D+1 para Stow de ECB8 (origem EVE8/EOZ8) e ESE8 (origem EJO8/EME8/EUM8). Coleta por EOZ8 deve ter stow em EVE8 em D+0, e D+1 em ECB8. Feriados: 03/04, 21/04, 01/05.';
+navigator.clipboard.writeText(prompt).then(function(){
+var btn=document.getElementById('refreshBtn');
+btn.classList.add('copied');
+btn.textContent='Prompt copiado!';
+showToast('Prompt copiado para o clipboard!','Cole no chat do Amazon Quick para atualizar os dados.');
+setTimeout(function(){btn.classList.remove('copied');btn.textContent='Atualizar Dados';},3000);
+}).catch(function(){
+var ta=document.createElement('textarea');
+ta.value=prompt;ta.style.position='fixed';ta.style.left='-9999px';
+document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
+var btn=document.getElementById('refreshBtn');
+btn.classList.add('copied');
+btn.textContent='Prompt copiado!';
+showToast('Prompt copiado para o clipboard!','Cole no chat do Amazon Quick para atualizar os dados.');
+setTimeout(function(){btn.classList.remove('copied');btn.textContent='Atualizar Dados';},3000);
+});
+}
+function showToast(msg,sub){var t=document.getElementById('toast');t.innerHTML=msg+(sub?'<div class="toast-sub">'+sub+'</div>':'');t.classList.add('show');setTimeout(function(){t.classList.remove('show');},4000);}
+function fmt(n){return Math.round(n).toLocaleString('pt-BR');}
+function fmtHrs(n){return n.toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1});}
+function cls(v,meta){return v>=meta?'ok':(v>=meta*0.95?'att':'crit');}
+function showTab(i){document.querySelectorAll('.tab').forEach(function(t,idx){t.classList.toggle('active',idx===i);});document.querySelectorAll('.content').forEach(function(c,idx){c.classList.toggle('active',idx===i);});}
+function resolveLabels(positions,minGap){
+positions.sort(function(a,b){return a.y-b.y;});
+for(var pass=0;pass<3;pass++){for(var i=1;i<positions.length;i++){
+var diff=positions[i].y-positions[i-1].y;
+if(diff<minGap){var shift=(minGap-diff)/2;positions[i-1].y-=shift;positions[i].y+=shift;}}}
+return positions;}
+function drawChart(svgId,dataObj,metaVal,yMin,yMax,regionalsArr){
+var svg=document.getElementById(svgId);
+if(!svg)return;
+var regs=regionalsArr||R;
+var W=960,H=400,padL=70,padR=130,padT=45,padB=50;
+var chartW=W-padL-padR,chartH=H-padT-padB;
+var xStep=chartW/(NW-1);
+var range=yMax-yMin;
+var s='';
+var gridSteps=6;
+var g,gVal,gy,w,x,r,reg,vals,color,pts,lw,y,labels,i,lb,lbl,tw,th,ly;
+for(g=0;g<=gridSteps;g++){
+gVal=yMin+(range/gridSteps)*g;
+gy=padT+chartH-((gVal-yMin)/range)*chartH;
+s+='<line x1="'+padL+'" y1="'+gy+'" x2="'+(W-padR)+'" y2="'+gy+'" stroke="#e9ecef" stroke-width="1"/>';
+s+='<text x="'+(padL-10)+'" y="'+(gy+4)+'" fill="#666" text-anchor="end" font-size="10">'+gVal.toFixed(0)+'</text>';
+}
+for(w=0;w<NW;w++){
+x=padL+w*xStep;
+s+='<text x="'+x+'" y="'+(H-12)+'" fill="#37475a" text-anchor="middle" font-size="12" font-weight="600">'+WK[w]+'</text>';
+s+='<line x1="'+x+'" y1="'+padT+'" x2="'+x+'" y2="'+(H-padB)+'" stroke="#f1f3f5" stroke-width="1"/>';
+}
+if(metaVal!==null){
+var metaY=padT+chartH-((metaVal-yMin)/range)*chartH;
+s+='<line x1="'+padL+'" y1="'+metaY+'" x2="'+(W-padR)+'" y2="'+metaY+'" stroke="#e74c3c" stroke-width="2" stroke-dasharray="8,4"/>';
+s+='<text x="'+(W-padR+5)+'" y="'+(metaY+4)+'" fill="#e74c3c" font-size="11" font-weight="700">Meta '+metaVal+'</text>';
+}
+for(r=0;r<regs.length;r++){
+reg=regs[r];vals=dataObj[reg];if(!vals)continue;color=C[reg];pts=[];
+lw=reg==='First Mile'?3:2.5;
+for(w=0;w<NW;w++){x=padL+w*xStep;y=padT+chartH-((vals[w]-yMin)/range)*chartH;pts.push(x+','+y);}
+s+='<polyline points="'+pts.join(' ')+'" fill="none" stroke="'+color+'" stroke-width="'+lw+'"/>';
+for(w=0;w<NW;w++){x=padL+w*xStep;y=padT+chartH-((vals[w]-yMin)/range)*chartH;
+s+='<circle cx="'+x+'" cy="'+y+'" r="5" fill="'+color+'" stroke="#fff" stroke-width="2"/>';
+}
+}
+for(w=0;w<NW;w++){
+x=padL+w*xStep;
+labels=[];
+for(r=0;r<regs.length;r++){reg=regs[r];vals=dataObj[reg];if(!vals)continue;y=padT+chartH-((vals[w]-yMin)/range)*chartH;
+labels.push({r:r,reg:reg,y:y,val:vals[w],color:C[reg]});}
+labels=resolveLabels(labels,22);
+for(i=0;i<labels.length;i++){lb=labels[i];
+lbl=lb.val.toFixed(1);tw=lbl.length*6.5+10;th=17;ly=lb.y;
+s+='<rect x="'+(x-tw/2)+'" y="'+(ly-9)+'" width="'+tw+'" height="'+th+'" rx="4" fill="'+lb.color+'" opacity="0.92"/>';
+s+='<text x="'+x+'" y="'+(ly+4)+'" fill="#fff" text-anchor="middle" font-size="10" font-weight="700">'+lbl+'</text>';
+}
+}
+var endLabels=[];
+for(r=0;r<regs.length;r++){reg=regs[r];vals=dataObj[reg];if(!vals)continue;
+var lastY=padT+chartH-((vals[NW-1]-yMin)/range)*chartH;
+endLabels.push({reg:reg,y:lastY,color:C[reg]});}
+endLabels=resolveLabels(endLabels,16);
+var lastX=padL+(NW-1)*xStep;
+for(i=0;i<endLabels.length;i++){var el=endLabels[i];
+s+='<text x="'+(lastX+12)+'" y="'+(el.y+4)+'" fill="'+el.color+'" font-size="11" font-weight="700">'+el.reg+'</text>';}
+svg.innerHTML=s;
+}
+document.addEventListener('DOMContentLoaded',function(){
+var STOW_NOTE='<div class="note" style="background:#eef6ff;border-left-color:#3b82f6;color:#1e40af"><b>DF-SUL ajustado pela regra D+1:</b> ECB8 (origem EVE8/EOZ8) e ESE8 (origem EJO8/EME8/EUM8). Coleta EOZ8 &#8594; stow EVE8 D+0, stow ECB8 D+1. Feriados: 03/04, 21/04, 01/05.</div>';
+var p0='<div class="bx"><h3>Packages Per Pallet (PPP) - Todas as Regionais</h3><div class="desc">Meta: >=175 | Semanas W15-W20 2026 | Fonte: [BR TRANS] FM METRICS</div>';
+p0+='<div class="legend">';
+for(var r=0;r<R.length;r++){p0+='<div class="legend-item" style="'+(R[r]==='First Mile'?'font-weight:800':'')+'"><div class="legend-dot" style="background:'+C[R[r]]+'"></div>'+R[r]+'</div>';}
+p0+='<div class="legend-item"><div class="legend-dot" style="background:#e74c3c"></div>Meta (175)</div></div>';
+p0+='<svg id="chartPPP" width="100%" viewBox="0 0 960 400"></svg>';
+p0+='<table><thead><tr><th>Regional</th>';
+for(var w=0;w<NW;w++){p0+='<th>'+WK[w]+'</th>';}
+p0+='<th>Media</th><th>Delta Meta</th></tr></thead><tbody>';
+for(var r=0;r<R.length;r++){var reg=R[r],vals=D.ppp[reg];var avg=vals.reduce(function(a,b){return a+b;},0)/NW;var gap=avg-M.ppp;
+var isFM=reg==='First Mile';
+p0+='<tr style="'+(isFM?'background:#edf2f7':'')+'"><td style="text-align:left;font-weight:'+(isFM?'800':'700')+';'+(isFM?'font-size:13px;':'')+'color:'+C[reg]+'">'+reg+'</td>';
+for(var w=0;w<NW;w++){var c=cls(vals[w],M.ppp);p0+='<td class="'+c+'">'+vals[w].toFixed(1)+'</td>';}
+var avgC=cls(avg,M.ppp);p0+='<td class="'+avgC+'">'+avg.toFixed(1)+'</td>';
+p0+='<td style="font-weight:700;color:'+(gap>=0?'#065f46':'#991b1b')+'">'+(gap>=0?'+':'')+gap.toFixed(1)+'</td></tr>';}
+p0+='</tbody></table>';
+p0+='<h3 style="margin-top:16px">Volume Processado</h3><table><thead><tr><th>Regional</th>';
+for(var w=0;w<NW;w++){p0+='<th>'+WK[w]+'</th>';}p0+='<th>Total</th></tr></thead><tbody>';
+for(var r=0;r<R.length;r++){var reg=R[r],vals=D.vol[reg];var total=vals.reduce(function(a,b){return a+b;},0);
+var isFM=reg==='First Mile';
+p0+='<tr style="'+(isFM?'background:#edf2f7':'')+'"><td style="text-align:left;font-weight:'+(isFM?'800':'700')+';color:'+C[reg]+'">'+reg+'</td>';
+for(var w=0;w<NW;w++){p0+='<td>'+fmt(vals[w])+'</td>';}p0+='<td style="font-weight:700">'+fmt(total)+'</td></tr>';}
+p0+='</tbody></table></div>';
+document.getElementById('tab0').innerHTML=p0;
+var p1='<div class="bx"><h3>Receive Success % - Todas as Regionais</h3><div class="desc">Meta: >=98,5% | Semanas W15-W20 2026</div>';
+p1+='<div class="legend">';for(var r=0;r<R.length;r++){p1+='<div class="legend-item" style="'+(R[r]==='First Mile'?'font-weight:800':'')+'"><div class="legend-dot" style="background:'+C[R[r]]+'"></div>'+R[r]+'</div>';}
+p1+='<div class="legend-item"><div class="legend-dot" style="background:#e74c3c"></div>Meta (98,5%)</div></div>';
+p1+='<svg id="chartRecv" width="100%" viewBox="0 0 960 400"></svg>';
+p1+='<table><thead><tr><th>Regional</th>';for(var w=0;w<NW;w++){p1+='<th>'+WK[w]+'</th>';}p1+='<th>Media</th><th>Status</th></tr></thead><tbody>';
+for(var r=0;r<R.length;r++){var reg=R[r],vals=D.recv[reg];var avg=vals.reduce(function(a,b){return a+b;},0)/NW;
+var isFM=reg==='First Mile';
+p1+='<tr style="'+(isFM?'background:#edf2f7':'')+'"><td style="text-align:left;font-weight:'+(isFM?'800':'700')+';'+(isFM?'font-size:13px;':'')+'color:'+C[reg]+'">'+reg+'</td>';
+for(var w=0;w<NW;w++){var c=cls(vals[w],M.recv);p1+='<td class="'+c+'">'+vals[w].toFixed(2)+'%</td>';}
+var avgC=cls(avg,M.recv);var st=avg>=M.recv?'Na Meta':'Abaixo';
+p1+='<td class="'+avgC+'">'+avg.toFixed(2)+'%</td><td>'+st+'</td></tr>';}
+p1+='</tbody></table></div>';
+p1+='<div class="bx"><h3>Stow Success % - Todas as Regionais (Corrigido D+1)</h3><div class="desc">Meta: >=99,5% | Semanas W15-W20 2026 | Corrigido com regra D+1 para ECB8/ESE8</div>';
+p1+=STOW_NOTE;
+p1+='<div class="legend">';for(var r=0;r<R.length;r++){p1+='<div class="legend-item" style="'+(R[r]==='First Mile'?'font-weight:800':'')+'"><div class="legend-dot" style="background:'+C[R[r]]+'"></div>'+R[r]+'</div>';}
+p1+='<div class="legend-item"><div class="legend-dot" style="background:#e74c3c"></div>Meta (99,5%)</div></div>';
+p1+='<svg id="chartStow" width="100%" viewBox="0 0 960 400"></svg>';
+p1+='<table><thead><tr><th>Regional</th>';for(var w=0;w<NW;w++){p1+='<th>'+WK[w]+'</th>';}p1+='<th>Media</th><th>Status</th></tr></thead><tbody>';
+for(var r=0;r<R.length;r++){var reg=R[r],vals=D.stow[reg];var avg=vals.reduce(function(a,b){return a+b;},0)/NW;
+var isFM=reg==='First Mile';
+p1+='<tr style="'+(isFM?'background:#edf2f7':'')+'"><td style="text-align:left;font-weight:'+(isFM?'800':'700')+';'+(isFM?'font-size:13px;':'')+'color:'+C[reg]+'">'+reg+'</td>';
+for(var w=0;w<NW;w++){var c=cls(vals[w],M.stow);p1+='<td class="'+c+'">'+vals[w].toFixed(2)+'%</td>';}
+var avgC=cls(avg,M.stow);var st=avg>=M.stow?'Na Meta':'Abaixo';
+p1+='<td class="'+avgC+'">'+avg.toFixed(2)+'%</td><td>'+st+'</td></tr>';}
+p1+='</tbody></table></div>';
+document.getElementById('tab1').innerHTML=p1;
+var p2='<div class="bx"><h3>Throughput (TPH) - Pacotes Processados por Hora</h3><div class="desc">Calculo: Volume Processado / Horas Trabalhadas | Semanas W15-W20 2026 | Fonte: Base TPH-10</div>';
+p2+='<div class="note" style="background:#eef6ff;border-left-color:#3b82f6;color:#1e40af"><b>SP INT</b> nao possui dados de Horas Trabalhadas na base, portanto nao e exibido nesta aba.</div>';
+p2+='<div class="legend">';
+for(var r=0;r<R_THP.length;r++){p2+='<div class="legend-item" style="'+(R_THP[r]==='First Mile'?'font-weight:800':'')+'"><div class="legend-dot" style="background:'+C[R_THP[r]]+'"></div>'+R_THP[r]+'</div>';}
+p2+='</div>';
+p2+='<svg id="chartTPH" width="100%" viewBox="0 0 960 400"></svg>';
+p2+='<table><thead><tr><th>Regional</th>';for(var w=0;w<NW;w++){p2+='<th>'+WK[w]+'</th>';}p2+='<th>Media</th></tr></thead><tbody>';
+for(var r=0;r<R_THP.length;r++){var reg=R_THP[r],vals=D.thp[reg];var avg=vals.reduce(function(a,b){return a+b;},0)/NW;
+var isFM=reg==='First Mile';
+p2+='<tr style="'+(isFM?'background:#edf2f7':'')+'"><td style="text-align:left;font-weight:'+(isFM?'800':'700')+';'+(isFM?'font-size:13px;':'')+'color:'+C[reg]+'">'+reg+'</td>';
+for(var w=0;w<NW;w++){p2+='<td style="font-weight:600">'+vals[w].toFixed(1)+'</td>';}
+p2+='<td style="font-weight:700">'+avg.toFixed(1)+'</td></tr>';}
+p2+='</tbody></table>';
+p2+='<h3 style="margin-top:16px">Volume Processado (TPH)</h3><table><thead><tr><th>Regional</th>';
+for(var w=0;w<NW;w++){p2+='<th>'+WK[w]+'</th>';}p2+='<th>Total</th></tr></thead><tbody>';
+for(var r=0;r<R_THP.length;r++){var reg=R_THP[r],vals=D.thpVol[reg];var total=vals.reduce(function(a,b){return a+b;},0);
+var isFM=reg==='First Mile';
+p2+='<tr style="'+(isFM?'background:#edf2f7':'')+'"><td style="text-align:left;font-weight:'+(isFM?'800':'700')+';color:'+C[reg]+'">'+reg+'</td>';
+for(var w=0;w<NW;w++){p2+='<td>'+fmt(vals[w])+'</td>';}p2+='<td style="font-weight:700">'+fmt(total)+'</td></tr>';}
+p2+='</tbody></table>';
+p2+='<h3 style="margin-top:16px">Horas Trabalhadas</h3><table><thead><tr><th>Regional</th>';
+for(var w=0;w<NW;w++){p2+='<th>'+WK[w]+'</th>';}p2+='<th>Total</th></tr></thead><tbody>';
+for(var r=0;r<R_THP.length;r++){var reg=R_THP[r],vals=D.thpHrs[reg];var total=vals.reduce(function(a,b){return a+b;},0);
+var isFM=reg==='First Mile';
+p2+='<tr style="'+(isFM?'background:#edf2f7':'')+'"><td style="text-align:left;font-weight:'+(isFM?'800':'700')+';color:'+C[reg]+'">'+reg+'</td>';
+for(var w=0;w<NW;w++){p2+='<td>'+fmtHrs(vals[w])+'</td>';}p2+='<td style="font-weight:700">'+fmtHrs(total)+'</td></tr>';}
+p2+='</tbody></table></div>';
+document.getElementById('tab2').innerHTML=p2;
+drawChart('chartPPP',D.ppp,M.ppp,135,280,R);
+drawChart('chartRecv',D.recv,M.recv,89,101,R);
+drawChart('chartStow',D.stow,M.stow,91,101,R);
+drawChart('chartTPH',D.thp,null,55,110,R_THP);
+});
 </script>
 </body>
 </html>
-
