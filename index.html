@@ -63,7 +63,7 @@ tr:nth-child(even){background:#f8f9fa}
 <div class="ft">FM METRICS Multi-Regional Dashboard | Amazon Logistics Brasil</div>
 <script src="data.js"></script>
 <script>
-var NW=D.weeks.length,WK=D.weeks,R=D.regionals,C=D.colors,M=D.meta;
+var MM=NW,UK=WK;
 var R_THP=["First Mile","DF-SUL","SP CAP","RIMES-NE"];
 function solicitarAtualizacao(){
 var prompt='Atualize o HTML FM METRICS Multi-Regional com os dados mais recentes do dashboard [BR TRANS] FM METRICS. Mantenha o layout, graficos, cores e estrutura identicos. Apenas substitua os valores de dados (PPP, Receive%, Stow%, Volume, TPH) e atualize o range de semanas conforme disponivel. Nao altere nada alem dos dados. Aplique a regra D+1 para Stow de ECB8 (origem EVE8/EOZ8) e ESE8 (origem EJO8/EME8/EUM8). Coleta por EOZ8 deve ter stow em EVE8 em D+0, e D+1 em ECB8. Feriados: 03/04, 21/04, 01/05.';
