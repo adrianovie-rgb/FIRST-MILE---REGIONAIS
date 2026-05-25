@@ -61,7 +61,6 @@ tr:nth-child(even){background:#f8f9fa}
 <div class="content" id="tab1"></div>
 <div class="content" id="tab2"></div>
 <div class="ft">FM METRICS Multi-Regional Dashboard | Amazon Logistics Brasil</div>
-<script>
 <script src="data.js"></script>
 <script>
 function showToast(msg,sub){var t=document.getElementById('toast');t.innerHTML=msg+(sub?'<div class="toast-sub">'+sub+'</div>':'');t.classList.add('show');setTimeout(function(){t.classList.remove('show');},4000);}
@@ -132,6 +131,9 @@ var lastX=padL+(NW-1)*xStep;
 for(i=0;i<endLabels.length;i++){var el=endLabels[i];
 s+='<text x="'+(lastX+12)+'" y="'+(el.y+4)+'" fill="'+el.color+'" font-size="11" font-weight="700">'+el.reg+'</text>';}
 svg.innerHTML=s;
+}
+function solicitarAtualizacao(){
+showToast('Dados atualizados automaticamente pelo script','Atualizacao diaria as 16:00');
 }
 document.addEventListener('DOMContentLoaded',function(){
 var STOW_NOTE='<div class="note" style="background:#eef6ff;border-left-color:#3b82f6;color:#1e40af"><b>DF-SUL ajustado pela regra D+1:</b> ECB8 (origem EVE8/EOZ8) e ESE8 (origem EJO8/EME8/EUM8). Coleta EOZ8 &#8594; stow EVE8 D+0, stow ECB8 D+1. Feriados: 03/04, 21/04, 01/05.</div>';
@@ -220,3 +222,4 @@ drawChart('chartTPH',D.thp,null,55,110,R_THP);
 </script>
 </body>
 </html>
+
