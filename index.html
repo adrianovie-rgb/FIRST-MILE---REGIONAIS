@@ -63,39 +63,162 @@ tr:nth-child(even){background:#f8f9fa}
 <div class="ft">FM METRICS Multi-Regional Dashboard | Amazon Logistics Brasil</div>
 <script src="data.js"></script>
 <script>
-(function() {
-  var order = ["DF-SUL","SP CAP","RIMES-NE","SP INT","OTHERS"];
-  D.weeks = D.semanas;
-  D.regionals = ["First Mile"].concat(order);
-  var metrics = ["volume","receive","stow","depart","backlog","backlog_acc","ppp","missort"];
-  var sumMetrics = ["volume","backlog","backlog_acc","missort"];
-  var avgMetrics = ["receive","stow","depart","ppp"];
-
-  metrics.forEach(function(m) {
-    D[m] = [];
-    D.weeks.forEach(function(w) {
-      var row = [];
-      var total = 0;
-      var count = 0;
-      order.forEach(function(reg) {
-        var val = (D.dados[w] && D.dados[w][reg]) ? D.dados[w][reg][m] : null;
-        row.push(val);
-        if (val !== null && val !== undefined) {
-          total += val;
-          count++;
-        }
-      });
-      var fm;
-      if (sumMetrics.indexOf(m) >= 0) {
-        fm = total;
-      } else {
-        fm = count > 0 ? total / count : null;
-      }
-      row.unshift(fm);
-      D[m].push(row);
-    });
-  });
-})();</script>
+function showToast(msg,sub){var t=document.getElementById('toast');t.innerHTML=msg+(sub?'<div class="toast-sub">'+sub+'</div>':'');t.classList.add('show');setTimeout(function(){t.classList.remove('show');},4000);}
+function fmt(n){return Math.round(n).toLocaleString('pt-BR');}
+function fmtHrs(n){return n.toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1});}
+function cls(v,meta){return v>=meta?'ok':(v>=meta*0.95?'att':'crit');}
+function showTab(i){document.querySelectorAll('.tab').forEach(function(t,idx){t.classList.toggle('active',idx===i);});document.querySelectorAll('.content').forEach(function(c,idx){c.classList.toggle('active',idx===i);});}
+function resolveLabels(positions,minGap){
+positions.sort(function(a,b){return a.y-b.y;});
+for(var pass=0;pass<3;pass++){for(var i=1;i<positions.length;i++){
+var diff=positions[i].y-positions[i-1].y;
+if(diff<minGap){var shift=(minGap-diff)/2;positions[i-1].y-=shift;positions[i].y+=shift;}}}
+return positions;}
+function drawChart(svgId,dataObj,metaVal,yMin,yMax,regionalsArr){
+var svg=document.getElementById(svgId);
+if(!svg)return;
+var regs=regionalsArr||R;
+var W=960,H=400,padL=70,padR=130,padT=45,padB=50;
+var chartW=W-padL-padR,chartH=H-padT-padB;
+var xStep=chartW/(NW-1);
+var range=yMax-yMin;
+var s='';
+var gridSteps=6;
+var g,gVal,gy,w,x,r,reg,vals,color,pts,lw,y,labels,i,lb,lbl,tw,th,ly;
+for(g=0;g<=gridSteps;g++){
+gVal=yMin+(range/gridSteps)*g;
+gy=padT+chartH-((gVal-yMin)/range)*chartH;
+s+='<line x1="'+padL+'" y1="'+gy+'" x2="'+(W-padR)+'" y2="'+gy+'" stroke="#e9ecef" stroke-width="1"/>';
+s+='<text x="'+(padL-10)+'" y="'+(gy+4)+'" fill="#666" text-anchor="end" font-size="10">'+gVal.toFixed(0)+'</text>';
+}
+for(w=0;w<NW;w++){
+x=padL+w*xStep;
+s+='<text x="'+x+'" y="'+(H-12)+'" fill="#37475a" text-anchor="middle" font-size="12" font-weight="600">'+WK[w]+'</text>';
+s+='<line x1="'+x+'" y1="'+padT+'" x2="'+x+'" y2="'+(H-padB)+'" stroke="#f1f3f5" stroke-width="1"/>';
+}
+if(metaVal!==null){
+var metaY=padT+chartH-((metaVal-yMin)/range)*chartH;
+s+='<line x1="'+padL+'" y1="'+metaY+'" x2="'+(W-padR)+'" y2="'+metaY+'" stroke="#e74c3c" stroke-width="2" stroke-dasharray="8,4"/>';
+s+='<text x="'+(W-padR+5)+'" y="'+(metaY+4)+'" fill="#e74c3c" font-size="11" font-weight="700">Meta '+metaVal+'</text>';
+}
+for(r=0;r<regs.length;r++){
+reg=regs[r];vals=dataObj[reg];if(!vals)continue;color=C[reg];pts=[];
+lw=reg==='First Mile'?3:2.5;
+for(w=0;w<NW;w++){x=padL+w*xStep;y=padT+chartH-((vals[w]-yMin)/range)*chartH;pts.push(x+','+y);}
+s+='<polyline points="'+pts.join(' ')+'" fill="none" stroke="'+color+'" stroke-width="'+lw+'"/>';
+for(w=0;w<NW;w++){x=padL+w*xStep;y=padT+chartH-((vals[w]-yMin)/range)*chartH;
+s+='<circle cx="'+x+'" cy="'+y+'" r="5" fill="'+color+'" stroke="#fff" stroke-width="2"/>';
+}
+}
+for(w=0;w<NW;w++){
+x=padL+w*xStep;
+labels=[];
+for(r=0;r<regs.length;r++){reg=regs[r];vals=dataObj[reg];if(!vals)continue;y=padT+chartH-((vals[w]-yMin)/range)*chartH;
+labels.push({r:r,reg:reg,y:y,val:vals[w],color:C[reg]});}
+labels=resolveLabels(labels,22);
+for(i=0;i<labels.length;i++){lb=labels[i];
+lbl=lb.val.toFixed(1);tw=lbl.length*6.5+10;th=17;ly=lb.y;
+s+='<rect x="'+(x-tw/2)+'" y="'+(ly-9)+'" width="'+tw+'" height="'+th+'" rx="4" fill="'+lb.color+'" opacity="0.92"/>';
+s+='<text x="'+x+'" y="'+(ly+4)+'" fill="#fff" text-anchor="middle" font-size="10" font-weight="700">'+lbl+'</text>';
+}
+}
+var endLabels=[];
+for(r=0;r<regs.length;r++){reg=regs[r];vals=dataObj[reg];if(!vals)continue;
+var lastY=padT+chartH-((vals[NW-1]-yMin)/range)*chartH;
+endLabels.push({reg:reg,y:lastY,color:C[reg]});}
+endLabels=resolveLabels(endLabels,16);
+var lastX=padL+(NW-1)*xStep;
+for(i=0;i<endLabels.length;i++){var el=endLabels[i];
+s+='<text x="'+(lastX+12)+'" y="'+(el.y+4)+'" fill="'+el.color+'" font-size="11" font-weight="700">'+el.reg+'</text>';}
+svg.innerHTML=s;
+}
+function solicitarAtualizacao(){
+showToast('Dados atualizados automaticamente pelo script','Atualizacao diaria as 16:00');
+}
+document.addEventListener('DOMContentLoaded',function(){
+var STOW_NOTE='<div class="note" style="background:#eef6ff;border-left-color:#3b82f6;color:#1e40af"><b>DF-SUL ajustado pela regra D+1:</b> ECB8 (origem EVE8/EOZ8) e ESE8 (origem EJO8/EME8/EUM8). Coleta EOZ8 &#8594; stow EVE8 D+0, stow ECB8 D+1. Feriados: 03/04, 21/04, 01/05.</div>';
+var p0='<div class="bx"><h3>Packages Per Pallet (PPP) - Todas as Regionais</h3><div class="desc">Meta: >=175 | Semanas W15-W20 2026 | Fonte: [BR TRANS] FM METRICS</div>';
+p0+='<div class="legend">';
+for(var r=0;r<R.length;r++){p0+='<div class="legend-item" style="'+(R[r]==='First Mile'?'font-weight:800':'')+'"><div class="legend-dot" style="background:'+C[R[r]]+'"></div>'+R[r]+'</div>';}
+p0+='<div class="legend-item"><div class="legend-dot" style="background:#e74c3c"></div>Meta (175)</div></div>';
+p0+='<svg id="chartPPP" width="100%" viewBox="0 0 960 400"></svg>';
+p0+='<table><thead><tr><th>Regional</th>';
+for(var w=0;w<NW;w++){p0+='<th>'+WK[w]+'</th>';}
+p0+='<th>Media</th><th>Delta Meta</th></tr></thead><tbody>';
+for(var r=0;r<R.length;r++){var reg=R[r],vals=D.ppp[reg];var avg=vals.reduce(function(a,b){return a+b;},0)/NW;var gap=avg-M.ppp;
+var isFM=reg==='First Mile';
+p0+='<tr style="'+(isFM?'background:#edf2f7':'')+'"><td style="text-align:left;font-weight:'+(isFM?'800':'700')+';'+(isFM?'font-size:13px;':'')+'color:'+C[reg]+'">'+reg+'</td>';
+for(var w=0;w<NW;w++){var c=cls(vals[w],M.ppp);p0+='<td class="'+c+'">'+vals[w].toFixed(1)+'</td>';}
+var avgC=cls(avg,M.ppp);p0+='<td class="'+avgC+'">'+avg.toFixed(1)+'</td>';
+p0+='<td style="font-weight:700;color:'+(gap>=0?'#065f46':'#991b1b')+'">'+(gap>=0?'+':'')+gap.toFixed(1)+'</td></tr>';}
+p0+='</tbody></table>';
+p0+='<h3 style="margin-top:16px">Volume Processado</h3><table><thead><tr><th>Regional</th>';
+for(var w=0;w<NW;w++){p0+='<th>'+WK[w]+'</th>';}p0+='<th>Total</th></tr></thead><tbody>';
+for(var r=0;r<R.length;r++){var reg=R[r],vals=D.vol[reg];var total=vals.reduce(function(a,b){return a+b;},0);
+var isFM=reg==='First Mile';
+p0+='<tr style="'+(isFM?'background:#edf2f7':'')+'"><td style="text-align:left;font-weight:'+(isFM?'800':'700')+';color:'+C[reg]+'">'+reg+'</td>';
+for(var w=0;w<NW;w++){p0+='<td>'+fmt(vals[w])+'</td>';}p0+='<td style="font-weight:700">'+fmt(total)+'</td></tr>';}
+p0+='</tbody></table></div>';
+document.getElementById('tab0').innerHTML=p0;
+var p1='<div class="bx"><h3>Receive Success % - Todas as Regionais</h3><div class="desc">Meta: >=98,5% | Semanas W15-W20 2026</div>';
+p1+='<div class="legend">';for(var r=0;r<R.length;r++){p1+='<div class="legend-item" style="'+(R[r]==='First Mile'?'font-weight:800':'')+'"><div class="legend-dot" style="background:'+C[R[r]]+'"></div>'+R[r]+'</div>';}
+p1+='<div class="legend-item"><div class="legend-dot" style="background:#e74c3c"></div>Meta (98,5%)</div></div>';
+p1+='<svg id="chartRecv" width="100%" viewBox="0 0 960 400"></svg>';
+p1+='<table><thead><tr><th>Regional</th>';for(var w=0;w<NW;w++){p1+='<th>'+WK[w]+'</th>';}p1+='<th>Media</th><th>Status</th></tr></thead><tbody>';
+for(var r=0;r<R.length;r++){var reg=R[r],vals=D.recv[reg];var avg=vals.reduce(function(a,b){return a+b;},0)/NW;
+var isFM=reg==='First Mile';
+p1+='<tr style="'+(isFM?'background:#edf2f7':'')+'"><td style="text-align:left;font-weight:'+(isFM?'800':'700')+';'+(isFM?'font-size:13px;':'')+'color:'+C[reg]+'">'+reg+'</td>';
+for(var w=0;w<NW;w++){var c=cls(vals[w],M.recv);p1+='<td class="'+c+'">'+vals[w].toFixed(2)+'%</td>';}
+var avgC=cls(avg,M.recv);var st=avg>=M.recv?'Na Meta':'Abaixo';
+p1+='<td class="'+avgC+'">'+avg.toFixed(2)+'%</td><td>'+st+'</td></tr>';}
+p1+='</tbody></table></div>';
+p1+='<div class="bx"><h3>Stow Success % - Todas as Regionais (Corrigido D+1)</h3><div class="desc">Meta: >=99,5% | Semanas W15-W20 2026 | Corrigido com regra D+1 para ECB8/ESE8</div>';
+p1+=STOW_NOTE;
+p1+='<div class="legend">';for(var r=0;r<R.length;r++){p1+='<div class="legend-item" style="'+(R[r]==='First Mile'?'font-weight:800':'')+'"><div class="legend-dot" style="background:'+C[R[r]]+'"></div>'+R[r]+'</div>';}
+p1+='<div class="legend-item"><div class="legend-dot" style="background:#e74c3c"></div>Meta (99,5%)</div></div>';
+p1+='<svg id="chartStow" width="100%" viewBox="0 0 960 400"></svg>';
+p1+='<table><thead><tr><th>Regional</th>';for(var w=0;w<NW;w++){p1+='<th>'+WK[w]+'</th>';}p1+='<th>Media</th><th>Status</th></tr></thead><tbody>';
+for(var r=0;r<R.length;r++){var reg=R[r],vals=D.stow[reg];var avg=vals.reduce(function(a,b){return a+b;},0)/NW;
+var isFM=reg==='First Mile';
+p1+='<tr style="'+(isFM?'background:#edf2f7':'')+'"><td style="text-align:left;font-weight:'+(isFM?'800':'700')+';'+(isFM?'font-size:13px;':'')+'color:'+C[reg]+'">'+reg+'</td>';
+for(var w=0;w<NW;w++){var c=cls(vals[w],M.stow);p1+='<td class="'+c+'">'+vals[w].toFixed(2)+'%</td>';}
+var avgC=cls(avg,M.stow);var st=avg>=M.stow?'Na Meta':'Abaixo';
+p1+='<td class="'+avgC+'">'+avg.toFixed(2)+'%</td><td>'+st+'</td></tr>';}
+p1+='</tbody></table></div>';
+document.getElementById('tab1').innerHTML=p1;
+var p2='<div class="bx"><h3>Throughput (TPH) - Pacotes Processados por Hora</h3><div class="desc">Calculo: Volume Processado / Horas Trabalhadas | Semanas W15-W20 2026 | Fonte: Base TPH-10</div>';
+p2+='<div class="note" style="background:#eef6ff;border-left-color:#3b82f6;color:#1e40af"><b>SP INT</b> nao possui dados de Horas Trabalhadas na base, portanto nao e exibido nesta aba.</div>';
+p2+='<div class="legend">';
+for(var r=0;r<R_THP.length;r++){p2+='<div class="legend-item" style="'+(R_THP[r]==='First Mile'?'font-weight:800':'')+'"><div class="legend-dot" style="background:'+C[R_THP[r]]+'"></div>'+R_THP[r]+'</div>';}
+p2+='</div>';
+p2+='<svg id="chartTPH" width="100%" viewBox="0 0 960 400"></svg>';
+p2+='<table><thead><tr><th>Regional</th>';for(var w=0;w<NW;w++){p2+='<th>'+WK[w]+'</th>';}p2+='<th>Media</th></tr></thead><tbody>';
+for(var r=0;r<R_THP.length;r++){var reg=R_THP[r],vals=D.thp[reg];var avg=vals.reduce(function(a,b){return a+b;},0)/NW;
+var isFM=reg==='First Mile';
+p2+='<tr style="'+(isFM?'background:#edf2f7':'')+'"><td style="text-align:left;font-weight:'+(isFM?'800':'700')+';'+(isFM?'font-size:13px;':'')+'color:'+C[reg]+'">'+reg+'</td>';
+for(var w=0;w<NW;w++){p2+='<td style="font-weight:600">'+vals[w].toFixed(1)+'</td>';}
+p2+='<td style="font-weight:700">'+avg.toFixed(1)+'</td></tr>';}
+p2+='</tbody></table>';
+p2+='<h3 style="margin-top:16px">Volume Processado (TPH)</h3><table><thead><tr><th>Regional</th>';
+for(var w=0;w<NW;w++){p2+='<th>'+WK[w]+'</th>';}p2+='<th>Total</th></tr></thead><tbody>';
+for(var r=0;r<R_THP.length;r++){var reg=R_THP[r],vals=D.thpVol[reg];var total=vals.reduce(function(a,b){return a+b;},0);
+var isFM=reg==='First Mile';
+p2+='<tr style="'+(isFM?'background:#edf2f7':'')+'"><td style="text-align:left;font-weight:'+(isFM?'800':'700')+';color:'+C[reg]+'">'+reg+'</td>';
+for(var w=0;w<NW;w++){p2+='<td>'+fmt(vals[w])+'</td>';}p2+='<td style="font-weight:700">'+fmt(total)+'</td></tr>';}
+p2+='</tbody></table>';
+p2+='<h3 style="margin-top:16px">Horas Trabalhadas</h3><table><thead><tr><th>Regional</th>';
+for(var w=0;w<NW;w++){p2+='<th>'+WK[w]+'</th>';}p2+='<th>Total</th></tr></thead><tbody>';
+for(var r=0;r<R_THP.length;r++){var reg=R_THP[r],vals=D.thpHrs[reg];var total=vals.reduce(function(a,b){return a+b;},0);
+var isFM=reg==='First Mile';
+p2+='<tr style="'+(isFM?'background:#edf2f7':'')+'"><td style="text-align:left;font-weight:'+(isFM?'800':'700')+';color:'+C[reg]+'">'+reg+'</td>';
+for(var w=0;w<NW;w++){p2+='<td>'+fmtHrs(vals[w])+'</td>';}p2+='<td style="font-weight:700">'+fmtHrs(total)+'</td></tr>';}
+p2+='</tbody></table></div>';
+document.getElementById('tab2').innerHTML=p2;
+drawChart('chartPPP',D.ppp,M.ppp,135,280,R);
+drawChart('chartRecv',D.recv,M.recv,89,101,R);
+drawChart('chartStow',D.stow,M.stow,91,101,R);
+drawChart('chartTPH',D.thp,null,55,110,R_THP);
+});
+</script>
 </body>
 </html>
-
