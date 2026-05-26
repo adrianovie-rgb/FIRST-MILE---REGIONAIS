@@ -3,7 +3,7 @@ var D={
   regionals:["First Mile","DF-SUL","SP CAP","SP INT","RIMES-NE"],
   colors:{"First Mile":"#2c3e50","DF-SUL":"#9b59b6","SP CAP":"#95a5a6","SP INT":"#e67e22","RIMES-NE":"#27ae60"},
   meta:{ppp:175,recv:98.5,stow:99.5},
-  lastUpdate:"26/05/2026 00:09",
+  lastUpdate:"26/05/2026 05:56",
   ppp:{"First Mile":[0,0,0,0,0,0,0],"DF-SUL":[0,0,0,0,0,0,0],"SP CAP":[0,0,0,0,0,0,0],"SP INT":[0,0,0,0,0,0,0],"RIMES-NE":[0,0,0,0,0,0,0]},
   recv:{"First Mile":[0,0,0,0,0,0,0],"DF-SUL":[0,0,0,0,0,0,0],"SP CAP":[0,0,0,0,0,0,0],"SP INT":[0,0,0,0,0,0,0],"RIMES-NE":[0,0,0,0,0,0,0]},
   stow:{"First Mile":[0,0,0,0,0,0,0],"DF-SUL":[0,0,0,0,0,0,0],"SP CAP":[0,0,0,0,0,0,0],"SP INT":[0,0,0,0,0,0,0],"RIMES-NE":[0,0,0,0,0,0,0]},
